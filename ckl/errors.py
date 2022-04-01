@@ -1,5 +1,6 @@
 from ckl.values import Value, ValueString
 
+
 class CklSyntaxError(Exception):
     def __init__(self, msg, pos=None):
         self.msg = msg
@@ -7,9 +8,9 @@ class CklSyntaxError(Exception):
 
     def __str__(self):
         if self.pos:
-            return f'SYNTAX-ERROR: {self.msg} ({self.pos})'
+            return f"SYNTAX-ERROR: {self.msg} ({self.pos})"
         else:
-            return f'SYNTAX-ERROR: {self.msg}'
+            return f"SYNTAX-ERROR: {self.msg}"
 
 
 class CklRuntimeError(Exception):
@@ -21,7 +22,6 @@ class CklRuntimeError(Exception):
 
     def __str__(self):
         if self.pos:
-            return f'{self.value}: {self.msg} ({self.pos})'
+            return f"{self.value}: {self.msg} ({self.pos})"
         else:
-            return f'{self.value}: {self.msg}'
-
+            return f"{self.value}: {self.msg}"

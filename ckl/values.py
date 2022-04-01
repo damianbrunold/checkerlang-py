@@ -1,4 +1,6 @@
-class Value: pass
+class Value:
+    pass
 
-class ValueString(Value): pass
 
+class ValueString(Value):
+    pass
