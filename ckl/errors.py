@@ -1,6 +1,3 @@
-from ckl.values import Value, ValueString
-
-
 class CklSyntaxError(Exception):
     def __init__(self, msg, pos=None):
         self.msg = msg
@@ -15,7 +12,7 @@ class CklSyntaxError(Exception):
 
 class CklRuntimeError(Exception):
     def __init__(self, value, msg, pos):
-        self.value = value if isinstance(value, Value) else ValueString(value)
+        self.value = value
         self.msg = msg
         self.pos = pos
         self.stacktrace = []
