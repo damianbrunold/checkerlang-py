@@ -163,14 +163,14 @@ class Lexer:
             raise CklSyntaxError("Unexpected end of input", self.getPos())
         t = self.next()
         if t.value != token or t.type != tokentype:
-            raise CklSyntaxError("Expected " + token + " but got " + t, t.pos)
+            raise CklSyntaxError(f"Expected {token} but got {t}", t.pos)
 
     def matchIdentifier(self):
         if not self.hasNext():
             raise CklSyntaxError("Unexpected end of input", self.getPos())
         t = self.next()
         if t.type != "identifier":
-            raise CklSyntaxError("Expected identifier but got " + t, t.pos)
+            raise CklSyntaxError(f"Expected identifier but got {t}", t.pos)
         return t.value
 
     def scan(self):

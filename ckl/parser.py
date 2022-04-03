@@ -204,7 +204,7 @@ def parse_statement(lexer, toplevel=False):
                     raise CklSyntaxError(
                         f"Expected identifier but got '{token}'", token.pos
                     )
-                identifiers.push(token.value)
+                identifiers.append(token.value)
                 if not lexer.peekn(1, "]", "interpunction"):
                     lexer.match(",", "interpunction")
             lexer.match("]", "interpunction")
@@ -243,7 +243,7 @@ def parse_statement(lexer, toplevel=False):
                         f"for loop but got '{token}'",
                         token.pos,
                     )
-                identifiers.push(token.value)
+                identifiers.append(token.value)
                 if not lexer.peekn(1, "]", "interpunction"):
                     lexer.match(",", "interpunction")
             lexer.match("]", "interpunction")
@@ -254,7 +254,7 @@ def parse_statement(lexer, toplevel=False):
                     f"Expected identifier in for loop but got '{token}'",
                     token.pos,
                 )
-            identifiers.push(token.value)
+            identifiers.append(token.value)
         lexer.match("in", "keyword")
         what = "values"
         if lexer.matchIf("keys", "identifier"):
@@ -1009,7 +1009,7 @@ def parse_primary_expr(lexer, unary_minus=False):
                             f"identifier but got {item}",
                             token.pos,
                         )
-                    identifiers.push(item.value)
+                    identifiers.append(item.value)
                 lexer.match("=", "operator")
                 result = NodeAssignDestructuring(
                     identifiers, parse_expression(lexer), token.pos

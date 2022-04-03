@@ -144,7 +144,7 @@ class NodeAssign:
         return environment.get(self.identifier, self.pos)
 
     def __repr__(self):
-        return f"({self.identifier} = {self.expression})"
+        return f"({self.identifier!s} = {self.expression})"
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
         self.expression.collectVars(freeVars, boundVars, additionalBoundVars)
@@ -191,7 +191,8 @@ class NodeAssignDestructuring:
         return result
 
     def __repr__(self):
-        return f"([{self.identifiers}] = {self.expression})"
+        identifiers = ",".join(str(identifier) for identifier in self.identifiers)
+        return f"([{identifiers!s}] = {self.expression})"
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
         self.expression.collectVars(freeVars, boundVars, additionalBoundVars)
@@ -410,7 +411,8 @@ class NodeDefDestructuring:
         return result
 
     def __repr__(self):
-        return f"(def [{self.identifiers}] = {self.expression})"
+        identifiers = ",".join(str(identifier) for identifier in self.identifiers)
+        return f"(def [{identifiers!s}] = {self.expression})"
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
         self.expression.collectVars(freeVars, boundVars, additionalBoundVars)
@@ -919,7 +921,7 @@ class NodeIdentifier:
         return environment.get(self.value, self.pos)
 
     def __repr__(self):
-        return repr(self.value)
+        return str(self.value)
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
         if (
@@ -966,7 +968,7 @@ class NodeIf:
                     for i in range(len(self.conditions))
                 ]
             )
-            + "else: "
+            + " else: "
             + repr(self.elseExpression)
             + ")"
         )
@@ -1048,7 +1050,7 @@ class NodeLambda:
     def __repr__(self):
         result = "(lambda "
         for i in range(len(self.args)):
-            result += repr(self.args[i])
+            result += str(self.args[i])
             if self.defs[i]:
                 result += "=" + repr(self.defs[i])
             result += ", "
@@ -1347,7 +1349,7 @@ class NodeLiteral:
         return self.value
 
     def __repr__(self):
-        return repr(self.value)
+        return str(self.value)
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
         pass
