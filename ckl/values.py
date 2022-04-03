@@ -28,7 +28,7 @@ class Args:
 
     def __repr__(self):
         return ", ".join(
-            [name + "=" + value for name, value in self.args.items()]
+            [str(name) + "=" + repr(value) for name, value in self.args.items()]
         )
 
     def toStringAbbrev(self):

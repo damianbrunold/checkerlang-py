@@ -40,19 +40,23 @@ from ckl.values import (
 )
 
 
-def get_None_environment():
+def get_none_environment():
     return Environment()
 
 
 def get_base_environment(secure=True, legacy=True):
-    result = get_None_environment()
-    result.put("checkerlang_secure_mode", ValueBoolean.fromvalval(secure))
+    result = get_none_environment()
+    result.put("checkerlang_secure_mode", ValueBoolean.fromval(secure))
     bind_native(result, "bind_native")
     result.put("NULL", NULL)
     if legacy:
-        parse_script(modulelegacy, ":legacy").evaluate(result)
+        # TODO
+        #parse_script(modulelegacy, ":legacy").evaluate(result)
+        pass
     else:
-        parse_script(modulebase, ":base").evaluate(result)
+        # TODO
+        #parse_script(modulebase, ":base").evaluate(result)
+        pass
     return result
 
 
@@ -134,7 +138,7 @@ class Environment:
             return self.parent.isDefined(symbol)
         return False
 
-    def get(self, symbol, pos):
+    def get(self, symbol, pos=None):
         if symbol in self.map:
             value = self.map[symbol]
             if value is None:
