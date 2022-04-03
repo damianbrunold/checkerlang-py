@@ -46,8 +46,8 @@ class Args:
             if names[i]:
                 if names[i] not in self.argNames:
                     raise CklRuntimeError(
-                        "ERROR",
-                        ValueString("Argument " + names[i] + " is unknown"),
+                        ValueString("ERROR"),
+                        "Argument " + names[i] + " is unknown",
                         self.pos,
                     )
                 self.args[names[i]] = values[i]
@@ -57,19 +57,17 @@ class Args:
             if not names[i]:
                 if inKeywords:
                     raise CklRuntimeError(
-                        "ERROR",
-                        ValueString(
-                            "Positional arguments need to be placed "
-                            "before named arguments"
-                        ),
+                        ValueString("ERROR"),
+                        "Positional arguments need to be placed "
+                        "before named arguments",
                         self.pos,
                     )
                 argName = self.getNextPositionalArgName()
                 if not argName:
                     if not self.restArgName:
                         raise CklRuntimeError(
-                            "ERROR",
-                            ValueString("Too many arguments"),
+                            ValueString("ERROR"),
+                            "Too many arguments",
                             self.pos,
                         )
                     rest.addItem(values[i])
@@ -81,8 +79,8 @@ class Args:
                 inKeywords = True
                 if names[i] not in self.argNames:
                     raise CklRuntimeError(
-                        "ERROR",
-                        ValueString("Argument " + names[i] + " is unknown"),
+                        ValueString("ERROR"),
+                        "Argument " + names[i] + " is unknown",
                         self.pos,
                     )
                 self.args[names[i]] = values[i]
@@ -100,7 +98,7 @@ class Args:
     def get(self, name):
         if not self.hasArg(name):
             raise CklRuntimeError(
-                "ERROR", ValueString("Missing argument " + name), self.pos
+                ValueString("ERROR"), "Missing argument " + name, self.pos
             )
         return self.args[name]
 
@@ -115,8 +113,8 @@ class Args:
         value = self.get(name)
         if not value.isString():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("String required but got " + value.type()),
+                ValueString("ERROR"),
+                "String required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -127,8 +125,8 @@ class Args:
         value = self.get(name)
         if not value.isBoolean():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Boolean required but got " + value.type()),
+                ValueString("ERROR"),
+                "Boolean required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -139,8 +137,8 @@ class Args:
         value = self.get(name)
         if not value.isInt():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Int required but got " + value.type()),
+                ValueString("ERROR"),
+                "Int required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -151,8 +149,8 @@ class Args:
         value = self.get(name)
         if not value.isDecimal():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Decimal required but got " + value.type()),
+                ValueString("ERROR"),
+                "Decimal required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -163,8 +161,8 @@ class Args:
         value = self.get(name)
         if not value.isNumerical():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Numerical required but got " + value.type()),
+                ValueString("ERROR"),
+                "Numerical required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -173,8 +171,8 @@ class Args:
         value = self.get(name)
         if not value.isList():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("List required but got " + value.type()),
+                ValueString("ERROR"),
+                "List required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -183,8 +181,8 @@ class Args:
         value = self.get(name)
         if not value.isMap():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Map required but got " + value.type()),
+                ValueString("ERROR"),
+                "Map required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -195,8 +193,8 @@ class Args:
         value = self.get(name)
         if not value.isInput():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Input required but got " + value.type()),
+                ValueString("ERROR"),
+                "Input required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -207,8 +205,8 @@ class Args:
         value = self.get(name)
         if not value.isOutput():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Output required but got " + value.type()),
+                ValueString("ERROR"),
+                "Output required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -217,8 +215,8 @@ class Args:
         value = self.get(name)
         if not value.isFunc():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Func required but got " + value.type()),
+                ValueString("ERROR"),
+                "Func required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -227,8 +225,8 @@ class Args:
         value = self.get(name)
         if not value.isDate():
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Date required but got " + value.type()),
+                ValueString("ERROR"),
+                "Date required but got " + value.type(),
                 self.pos,
             )
         return value
@@ -469,66 +467,66 @@ class Value:
         self.info = ""
 
     def asString(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to String"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to String")
 
     def asInt(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to int"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to int")
 
     def asDecimal(self):
         raise CklRuntimeError(
-            "ERROR", ValueString("Cannot convert to decimal")
+            ValueString("ERROR"), "Cannot convert to decimal"
         )
 
     def asBoolean(self):
         raise CklRuntimeError(
-            "ERROR", ValueString("Cannot convert to boolean")
+            ValueString("ERROR"), "Cannot convert to boolean"
         )
 
     def asPattern(self):
         raise CklRuntimeError(
-            "ERROR", ValueString("Cannot convert to pattern")
+            ValueString("ERROR"), "Cannot convert to pattern"
         )
 
     def asDate(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to date"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to date")
 
     def asList(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to list"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to list")
 
     def asSet(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to set"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to set")
 
     def asMap(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to map"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to map")
 
     def asFunc(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to func"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to func")
 
     def asInput(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to input"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to input")
 
     def asOutput(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to output"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to output")
 
     def asNull(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to NULL"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to NULL")
 
     def asNode(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to Node"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to Node")
 
     def asObject(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to Object"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to Object")
 
     def asBreak(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to break"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to break")
 
     def asContinue(self):
         raise CklRuntimeError(
-            "ERROR", ValueString("Cannot convert to continue")
+            ValueString("ERROR"), "Cannot convert to continue"
         )
 
     def asReturn(self):
-        raise CklRuntimeError("ERROR", ValueString("Cannot convert to return"))
+        raise CklRuntimeError(ValueString("ERROR"), "Cannot convert to return")
 
     def isString(self):
         return False
@@ -736,7 +734,7 @@ class ValueControlReturn(Value):
         return str(self) < str(other)
 
     def __repr__(self):
-        return "return " + repr(self.value)
+        return f"return {self.value}"
 
     def type(self):
         return "return"
@@ -853,7 +851,7 @@ class ValueFunc(Value):
         return str(self) < str(other)
 
     def __repr__(self):
-        return "<#" + self.name + ">"
+        return f"<#{self.name}>"
 
     def type(self):
         return "func"
@@ -1082,7 +1080,7 @@ class ValueMap(Value):
             "<<<"
             + ", ".join(
                 [
-                    str(key) + " => " + str(self.value[key])
+                    f"{key} => {self.value[key]}"
                     for key in self.getSortedKeys()
                 ]
             )
@@ -1248,7 +1246,7 @@ class ValueObject(Value):
                 "<*"
                 + ", ".join(
                     [
-                        key + "=" + str(self.value.get(key))
+                        f"{key}={self.value.get(key)}"
                         for key in self.value.keys()
                         if not key.startswith("_")
                     ]
@@ -1388,7 +1386,7 @@ class ValuePattern(Value):
         return self.value < other.value
 
     def __repr__(self):
-        return "//" + self.value + "//"
+        return f"//{self.value}//"
 
     def type(self):
         return "pattern"
@@ -1494,7 +1492,7 @@ class ValueString(Value):
         result = result.replace("\r", "\\r")
         result = result.replace("\n", "\\n")
         result = result.replace("\t", "\\t")
-        return "'" + result + "'"
+        return f"'{result}'"
 
     def type(self):
         return "string"
@@ -1510,8 +1508,8 @@ class ValueString(Value):
             return ValueInt(int(self.value))
         except ValueError:
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Cannot convert " + self.value + " to int"),
+                ValueString("ERROR"),
+                "Cannot convert " + str(self.value) + " to int",
             )
 
     def asDecimal(self):
@@ -1519,8 +1517,8 @@ class ValueString(Value):
             return ValueDecimal(float(self.value))
         except ValueError:
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Cannot convert " + self.value + " to decimal"),
+                ValueString("ERROR"),
+                "Cannot convert " + str(self.value) + " to decimal",
             )
 
     def asBoolean(self):
@@ -1535,8 +1533,8 @@ class ValueString(Value):
         # raise exception if not matching
         if len(self.value) < 8:
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Cannot convert " + self.value + " to date"),
+                ValueString("ERROR"),
+                "Cannot convert " + str(self.value) + " to date",
             )
         try:
             if len(self.value) == 14:
@@ -1547,8 +1545,8 @@ class ValueString(Value):
                 return ValueDate(datetime.datetime.strptime("%Y%m%d"))
         except ValueError:
             raise CklRuntimeError(
-                "ERROR",
-                ValueString("Cannot convert " + self.value + " to date"),
+                ValueString("ERROR"),
+                "Cannot convert " + str(self.value) + " to date",
             )
 
     def asPattern(self):
