@@ -1627,7 +1627,8 @@ class NodeRequire:
             moduleEnv = environment.getBase().newEnv()
             # TODO port this, careful with dependencies!
             modulesrc = moduleloader(modulefile, environment, self.pos)
-            node = Parser.parseScript(modulesrc, "mod:" + modulefile[0:-4])
+            import ckl.parser
+            node = ckl.parser.Parser.parseScript(modulesrc, "mod:" + modulefile[0:-4])
             node.evaluate(moduleEnv)
             modules.set(moduleidentifier, moduleEnv)
         environment.popModuleStack()
