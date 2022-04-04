@@ -33,7 +33,7 @@ class Args:
 
     def toStringAbbrev(self):
         result = []
-        for name, value in self.args.items:
+        for name, value in self.args.items():
             value = str(value)
             if len(value) > 50:
                 value = value[0:50] + "... " + value[len(value) - 5:]

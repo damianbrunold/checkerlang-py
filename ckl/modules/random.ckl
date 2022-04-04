@@ -1,0 +1,45 @@
+bind_native("random");
+bind_native("set_seed");
+
+"
+choice(lst)
+
+Returns a random element from the list or set lst.
+
+: choice([1, 1, 1, 1]) ==> 1
+"
+def choice(lst) list(lst)[random(length(lst))];
+
+
+"
+choices(lst, n)
+
+Returns a list with n random elements from the list or set lst.
+"
+def choices(lst, n) do
+  def lst_ = list(lst);
+  [choice(lst_) for i in range(n)];
+end;
+
+
+"
+sample(lst, n)
+
+Returns a set with n random elements from the list or set lst,
+without repetitions. Also works with a string.
+
+: sample([1, 2, 3], 3) ==> <<1, 2, 3>>
+: sample([1, 1, 1, 2, 2, 3], 3) ==> <<1, 2, 3>>
+: sample('abc', 3) ==> <<'a', 'b', 'c'>>
+"
+def sample(lst, n) do
+  if is_string(lst) then lst = split(lst, "");
+  if length(set(lst)) < n then error "List must contain at least " + n + " unique elements";
+  def result = <<>>;
+  def lst_ = list(lst);
+  def len = length(lst_);
+  while length(result) < n do
+    result !> append(lst_[random(len)]);
+  end;
+  return result;
+end;

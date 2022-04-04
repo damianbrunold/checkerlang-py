@@ -11,7 +11,7 @@ class CklSyntaxError(Exception):
 
 
 class CklRuntimeError(Exception):
-    def __init__(self, value, msg, pos):
+    def __init__(self, value, msg, pos=None):
         self.value = value
         self.msg = msg
         self.pos = pos

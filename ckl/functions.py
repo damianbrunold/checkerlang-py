@@ -1,5 +1,6 @@
 import datetime
 import json
+import pkgutil
 import platform
 import math
 import os
@@ -50,13 +51,11 @@ def get_base_environment(secure=True, legacy=True):
     bind_native(result, "bind_native")
     result.put("NULL", NULL)
     if legacy:
-        # TODO
-        #parse_script(modulelegacy, ":legacy").evaluate(result)
-        pass
+        script = pkgutil.get_data(__name__, "modules/legacy.ckl").decode("utf-8")
+        parse_script(script, ":legacy").evaluate(result)
     else:
-        # TODO
-        #parse_script(modulebase, ":base").evaluate(result)
-        pass
+        script = pkgutil.get_data(__name__, "modules/base.ckl").decode("utf-8")
+        parse_script(script, ":base").evaluate(result)
     return result
 
 
@@ -101,7 +100,7 @@ class Environment:
 
     def pushModuleStack(self, moduleidentifier, pos):
         base = self.getBase()
-        if base.modulestack.includes(moduleidentifier):
+        if moduleidentifier in base.modulestack:
             raise CklRuntimeError(
                 ValueString("ERROR"),
                 f"Found circular module dependency ({moduleidentifier})",
@@ -263,9 +262,9 @@ def bind_native(environment, native, alias=None):
         bind_native_fun(environment, FuncIdentity(), alias)
     elif native == "if_empty":
         bind_native_fun(environment, FuncIfEmpty(), alias)
-    elif native == "if_None":
+    elif native == "if_null":
         bind_native_fun(environment, FuncIfNull(), alias)
-    elif native == "if_None_or_empty":
+    elif native == "if_null_or_empty":
         bind_native_fun(environment, FuncIfNullOrEmpty(), alias)
     elif native == "info":
         bind_native_fun(environment, FuncInfo(), alias)
@@ -277,9 +276,9 @@ def bind_native(environment, native, alias=None):
         bind_native_fun(environment, FuncIsEmpty(), alias)
     elif native == "is_not_empty":
         bind_native_fun(environment, FuncIsNotEmpty(), alias)
-    elif native == "is_not_None":
+    elif native == "is_not_null":
         bind_native_fun(environment, FuncIsNotNull(), alias)
-    elif native == "is_None":
+    elif native == "is_null":
         bind_native_fun(environment, FuncIsNull(), alias)
     elif native == "length":
         bind_native_fun(environment, FuncLength(), alias)
@@ -455,7 +454,7 @@ def bind_native(environment, native, alias=None):
         )
 
 
-def bind_native_fun(environment, func, alias):
+def bind_native_fun(environment, func, alias=None):
     if (
         environment.getBase().get("checkerlang_secure_mode").value
         and not func.secure
@@ -1960,15 +1959,15 @@ class FuncIfEmpty(ValueFunc):
 
 class FuncIfNull(ValueFunc):
     def __init__(self):
-        super().__init__("if_None")
+        super().__init__("if_null")
         self.info = "\r\n".join(
             [
-                "if_None(a, b)",
+                "if_null(a, b)",
                 "",
                 "Returns b if a is NULL otherwise returns a.",
                 "",
-                ": if_None(1, 2) ==> 1",
-                ": if_None(NULL, 2) ==> 2",
+                ": if_null(1, 2) ==> 1",
+                ": if_null(NULL, 2) ==> 2",
             ]
         )
 
@@ -1984,17 +1983,17 @@ class FuncIfNull(ValueFunc):
 
 class FuncIfNullOrEmpty(ValueFunc):
     def __init__(self):
-        super().__init__("if_None_or_empty")
+        super().__init__("if_null_or_empty")
         self.info = "\r\n".join(
             [
-                "if_None_or_empty(a, b)",
+                "if_null_or_empty(a, b)",
                 "",
                 "Returns b if a is None or an empty string otherwise ",
                 "returns a.",
                 "",
-                ": if_None_or_empty(1, 2) ==> 1",
-                ": if_None_or_empty(NULL, 2) ==> 2",
-                ": if_None_or_empty('', 2) ==> 2",
+                ": if_null_or_empty(1, 2) ==> 1",
+                ": if_null_or_empty(NULL, 2) ==> 2",
+                ": if_null_or_empty('', 2) ==> 2",
             ]
         )
 

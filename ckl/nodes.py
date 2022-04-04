@@ -1,3 +1,5 @@
+import pkgutil
+
 from ckl.errors import CklRuntimeError, CklSyntaxError
 from ckl.values import (
     Args,
@@ -363,7 +365,8 @@ class NodeDef:
         value = self.expression.evaluate(environment)
         value.info = self.info
         environment.put(self.identifier, value)
-        if isinstance(value, FuncLambda):
+        import ckl.functions
+        if isinstance(value, ckl.functions.FuncLambda):
             value.name = self.identifier
         return value
 
@@ -402,7 +405,8 @@ class NodeDefDestructuring:
         for i in range(len(self.identifiers)):
             if i < len(values):
                 environment.put(self.identifiers[i], values[i])
-                if isinstance(values[i], FuncLambda):
+                import ckl.functions
+                if isinstance(values[i], ckl.functions.FuncLambda):
                     values[i].name = self.identifiers[i]
                 result = values[i]
             else:
@@ -1041,7 +1045,8 @@ class NodeLambda:
         self.body = body
 
     def evaluate(self, environment):
-        result = FuncLambda(environment)
+        import ckl.functions
+        result = ckl.functions.FuncLambda(environment)
         for i in range(len(self.args)):
             result.addArg(self.args[i], self.defs[i])
         result.setBody(self.body)
@@ -1570,7 +1575,7 @@ class NodeRequire:
         modules = environment.getModules()
         # resolve module file, identifier and name
         modulespec = None
-        if isinstance(modulespec, NodeIdentifier):
+        if isinstance(self.modulespec, NodeIdentifier):
             modulespec = self.modulespec.value
 
             # If we have an identifier node, then two cases can happen:
@@ -1619,20 +1624,25 @@ class NodeRequire:
         moduleidentifier = name
         if not modulename:
             modulename = name
-        environment.appendModuleStack(moduleidentifier, self.pos)
+        environment.pushModuleStack(moduleidentifier, self.pos)
 
         # lookup or read module
         moduleEnv = None
-        if modules.has(moduleidentifier):
-            moduleEnv = modules.get(moduleidentifier)
+        if moduleidentifier in modules:
+            moduleEnv = modules[moduleidentifier]
         else:
             moduleEnv = environment.getBase().newEnv()
             # TODO port this, careful with dependencies!
-            modulesrc = moduleloader(modulefile, environment, self.pos)
+            data = pkgutil.get_data(__name__, "modules/" + modulefile)
+            if data:
+                modulesrc = data.decode("utf-8")
+            else:
+                # TODO load module from filesystem (current workdir or modulepath!) if available
+                pass
             import ckl.parser
-            node = ckl.parser.Parser.parseScript(modulesrc, "mod:" + modulefile[0:-4])
+            node = ckl.parser.parse_script(modulesrc, "mod:" + modulefile[0:-4])
             node.evaluate(moduleEnv)
-            modules.set(moduleidentifier, moduleEnv)
+            modules[moduleidentifier] = moduleEnv
         environment.popModuleStack()
 
         # bind module or contents of module
@@ -1645,9 +1655,9 @@ class NodeRequire:
             for name in moduleEnv.getLocalSymbols():
                 if name.startswith("_"):
                     continue  # skip private module symbols
-                if not self.symbols.has(name):
+                if name not in self.symbols:
                     continue
-                environment.put(self.symbols.get(name), moduleEnv.get(name))
+                environment.put(self.symbols[name], moduleEnv.get(name))
         else:
             obj = ValueObject()
             obj.isModule = True

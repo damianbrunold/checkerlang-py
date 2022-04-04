@@ -62,9 +62,9 @@ class SourcePos:
             return "-"
         return (
             ((self.filename + ":") if self.filename != "-" else ":")
-            + self.line
+            + str(self.line)
             + ":"
-            + self.column
+            + str(self.column)
         )
 
 

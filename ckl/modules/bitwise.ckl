@@ -1,0 +1,9 @@
+bind_native("bit_and", "bit_and_32");
+bind_native("bit_or", "bit_or_32");
+bind_native("bit_not", "bit_not_32");
+bind_native("bit_xor", "bit_xor_32");
+bind_native("bit_rotate_left", "bit_rotate_left_32");
+bind_native("bit_rotate_right", "bit_rotate_right_32");
+bind_native("bit_shift_left", "bit_shift_left");
+bind_native("bit_shift_right", "bit_shift_right");
+
