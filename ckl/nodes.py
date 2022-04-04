@@ -1633,7 +1633,7 @@ class NodeRequire:
         else:
             moduleEnv = environment.getBase().newEnv()
             # TODO port this, careful with dependencies!
-            data = pkgutil.get_data(__name__, "modules/" + modulefile)
+            data = pkgutil.get_data(__name__, "modules/" + modulefile.lower())
             if data:
                 modulesrc = data.decode("utf-8")
             else:

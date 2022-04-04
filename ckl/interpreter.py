@@ -1,3 +1,5 @@
+import os
+
 from ckl.errors import CklRuntimeError
 from ckl.parser import parse_script
 from ckl.functions import (
@@ -22,7 +24,7 @@ class Interpreter:
         self.base_environment.put("stdout", ValueOutput(StringOutput()))
         self.base_environment.put("stdin", ValueInput(StringInput("")))
         if not secure:
-            self.base_environment.put("run", FuncRun(this))
+            self.base_environment.put("run", FuncRun(self))
 
     def setStandardOutput(self, stdout):
         self.base_environment.put("stdout", ValueOutput(stdout))
@@ -36,7 +38,7 @@ class Interpreter:
             enc = 'utf8'
         with open(filename, encoding=encoding) as infile:
             contents = infile.read()
-        return interpret(contents, filename) # TODO extract filename from path
+        return interpret(contents, os.path.basename(filename))
 
     def interpret(self, script, filename, environment=None):
         savedParent = None

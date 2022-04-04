@@ -845,7 +845,7 @@ class ValueFunc(Value):
         return hash(self.name)
 
     def __eq__(self, other):
-        return self == other
+        return self is other
 
     def __lt__(self, other):
         return str(self) < str(other)
@@ -1186,7 +1186,7 @@ class ValueNull(Value):
         return 0
 
     def __eq__(self, other):
-        return other == NULL
+        return other is NULL
 
     def __lt__(self, other):
         return str(self) < str(other)

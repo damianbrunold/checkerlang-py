@@ -3370,10 +3370,9 @@ class FuncRound(ValueFunc):
 
 
 class FuncRun(ValueFunc):
-    def __init__(self, interpreter, fs):
+    def __init__(self, interpreter):
         super().__init__("run")
         self.interpreter = interpreter
-        self.fs = fs
         self.info = "\r\n".join(
             ["run(file)", "", "Loads and interprets the file."]
         )
