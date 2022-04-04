@@ -2233,7 +2233,7 @@ class FuncLambda(ValueFunc):
 
     def execute(self, args, environment, pos):
         env = self.lexicalEnv.newEnv()
-        for i in range(len(self.argName)):
+        for i in range(len(self.argNames)):
             if args.hasArg(self.argNames[i]):
                 env.put(self.argNames[i], args.get(self.argNames[i]))
             elif self.defValues[i] is not None:

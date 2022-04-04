@@ -687,13 +687,13 @@ class NodeFor:
                             environment.put(self.identifiers[i], vals[i])
 
                     result = self.block.evaluate(environment)
-                    if result.isControlBreak():
+                    if result.isBreak():
                         result = TRUE
                         break
-                    elif result.isControlContinue():
+                    elif result.isContinue():
                         result = TRUE
                         # continue
-                    elif result.isControlReturn():
+                    elif result.isReturn():
                         break
                     line = input_.readLine()
                 if len(self.identifiers) == 1:
@@ -721,13 +721,13 @@ class NodeFor:
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
-                if result.isControlBreak():
+                if result.isBreak():
                     result = TRUE
                     break
-                elif result.isControlContinue():
+                elif result.isContinue():
                     result = TRUE
                     # continue
-                elif result.isControlReturn():
+                elif result.isReturn():
                     break
             if len(self.identifiers) == 1:
                 environment.remove(self.identifiers[0])
@@ -750,13 +750,13 @@ class NodeFor:
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
-                if result.isControlBreak():
+                if result.isBreak():
                     result = TRUE
                     break
-                elif result.isControlContinue():
+                elif result.isContinue():
                     result = TRUE
                     # continue
-                elif result.isControlReturn():
+                elif result.isReturn():
                     break
             if len(self.identifiers) == 1:
                 environment.remove(self.identifiers[0])
@@ -788,13 +788,13 @@ class NodeFor:
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
-                if result.isControlBreak():
+                if result.isBreak():
                     result = TRUE
                     break
-                elif result.isControlContinue():
+                elif result.isContinue():
                     result = TRUE
                     # continue
-                elif result.isControlReturn():
+                elif result.isReturn():
                     break
             if len(self.identifiers) == 1:
                 environment.remove(self.identifiers[0])
@@ -826,13 +826,13 @@ class NodeFor:
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
-                if result.isControlBreak():
+                if result.isBreak():
                     result = TRUE
                     break
-                elif result.isControlContinue():
+                elif result.isContinue():
                     result = TRUE
                     # continue
-                elif result.isControlReturn():
+                elif result.isReturn():
                     break
             if len(self.identifiers) == 1:
                 environment.remove(self.identifiers[0])
@@ -847,13 +847,13 @@ class NodeFor:
             for i in range(len(s)):
                 environment.put(self.identifiers[0], ValueString(s[i:i+1]))
                 result = self.block.evaluate(environment)
-                if result.isControlBreak():
+                if result.isBreak():
                     result = TRUE
                     break
-                elif result.isControlContinue():
+                elif result.isContinue():
                     result = TRUE
                     # continue
-                elif result.isControlReturn():
+                elif result.isReturn():
                     break
                 environment.remove(self.identifiers[0])
             return result
@@ -1989,13 +1989,13 @@ class NodeWhile:
         result = TRUE
         while condition.value:
             result = self.block.evaluate(environment)
-            if result.isControlBreak():
+            if result.isBreak():
                 result = TRUE
                 break
-            elif result.isControlContinue():
+            elif result.isContinue():
                 result = TRUE
                 # continue
-            elif result.isControlReturn():
+            elif result.isReturn():
                 break
             condition = self.expression.evaluate(environment)
             if not condition.isBoolean():
