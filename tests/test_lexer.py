@@ -152,3 +152,72 @@ def test_if_then_elif_else_keywords():
         "then (keyword), d (identifier), else (keyword), "
         "e (identifier)] @ 0"
     )
+
+
+def test_hex_literal():
+    assert(
+        str(Lexer.init("0xff")) == "[255 (int)] @ 0"
+    )
+
+
+def test_bin_literal():
+    assert(
+        str(Lexer.init("0b111")) == "[7 (int)] @ 0"
+    )
+
+
+def test_int_separators():
+    assert(
+        str(Lexer.init("123_456_789")) == "[123456789 (int)] @ 0"
+    )
+
+
+def test_comparators_and_terminators():
+    assert(
+            str(Lexer.init("<> <= >= == << >> <<< >>> !> <* *>"))
+            == "[<> (operator), <= (operator), >= (operator), "
+            "== (operator), << (interpunction), >> (interpunction), "
+            "<<< (interpunction), >>> (interpunction), "
+            "!> (operator), <* (interpunction), *> (interpunction)] @ 0"
+    )
+
+
+def test_double_quotes():
+    assert(
+            str(Lexer.init('"abc\\r\\n\\tdef"')) == "[abc\\r\\n\\tdef (string)] @ 0"
+    )
+
+
+def test_single_quotes():
+    assert(
+            str(Lexer.init("'abc\\r\\n\\tdef'")) == "[abc\\r\\n\\tdef (string)] @ 0"
+    )
+
+
+def test_int_decimal():
+    assert(
+            str(Lexer.init("123 123.456")) == "[123 (int), 123.456 (decimal)] @ 0"
+    )
+
+
+def test_deref():
+    assert(
+            str(Lexer.init("a[1]; b->c"))
+            == "[a (identifier), [ (interpunction), 1 (int), ] (interpunction), "
+            "; (interpunction), b (identifier), -> (operator), c (identifier)] @ 0"
+    )
+
+
+def test_assign_ops():
+    assert(
+            str(Lexer.init("+= -= *= %= /="))
+            == "[+= (operator), -= (operator), *= (operator), "
+            "%= (operator), /= (operator)] @ 0"
+    )
+
+def test_ops():
+    assert(
+            str(Lexer.init("+ - * / %"))
+            == "[+ (operator), - (operator), * (operator), "
+            "/ (operator), % (operator)] @ 0"
+    )
