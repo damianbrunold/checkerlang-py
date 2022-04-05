@@ -29,8 +29,10 @@ def main():
                 if value != NULL:
                     print(value)
             except CklRuntimeError as e:
-                print("ERR: " + str(e.value.asString().value) + " (Line " + str(e.pos) + ")")
-                print(str(e.stacktrace))
+                print(str(e.value.asString().value) + ": " + e.msg + " (Line " + str(e.pos) + ")")
+                if e.stacktrace:
+                    for st in e.stacktrace:
+                        print(str(st))
             except CklSyntaxError as e:
                 print(e.msg + ((" (Line " + str(e.pos) + ")") if e.pos else ""))
 

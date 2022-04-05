@@ -674,7 +674,7 @@ class ValueControlBreak(Value):
         return hash("break")
 
     def __eq__(self, other):
-        return self == other
+        return self is other
 
     def __lt__(self, other):
         return str(self) < str(other)
@@ -701,7 +701,7 @@ class ValueControlContinue(Value):
         return hash("continue")
 
     def __eq__(self, other):
-        return self == other
+        return self is other
 
     def __lt__(self, other):
         return str(self) < str(other)
@@ -729,7 +729,7 @@ class ValueControlReturn(Value):
         return hash(repr(self))
 
     def __eq__(self, other):
-        return self == other
+        return self is other
 
     def __lt__(self, other):
         return str(self) < str(other)
@@ -877,7 +877,7 @@ class ValueInput(Value):
         return hash("input")
 
     def __eq__(self, other):
-        return self == other
+        return self is other
 
     def __lt__(self, other):
         return str(self) < str(other)

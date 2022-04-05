@@ -1,4 +1,5 @@
 import os
+import sys
 
 from ckl.errors import CklRuntimeError
 from ckl.parser import parse_script
@@ -21,8 +22,8 @@ class Interpreter:
         self.base_environment = get_base_environment(secure, legacy)
         self.environment = self.base_environment.newEnv()
         self.base_environment.put("console", ValueOutput(ConsoleOutput()))
-        self.base_environment.put("stdout", ValueOutput(StringOutput()))
-        self.base_environment.put("stdin", ValueInput(StringInput("")))
+        self.base_environment.put("stdout", ValueOutput(sys.stdout))
+        self.base_environment.put("stdin", ValueInput(sys.stdin))
         if not secure:
             self.base_environment.put("run", FuncRun(self))
 
