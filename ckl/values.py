@@ -4,6 +4,7 @@ import math
 import re
 
 from ckl.errors import CklRuntimeError
+from ckl.date import to_oa_date, to_date
 
 
 class Args:
@@ -774,10 +775,10 @@ class ValueDate(Value):
         return ValueString(str(self))
 
     def asInt(self):
-        return ValueInt(math.trunc(self.value.timestamp()))
+        return ValueInt(math.trunc(to_oa_date(self.value)))
 
     def asDecimal(self):
-        return ValueDecimal(self.value.timestamp())
+        return ValueDecimal(to_oa_date(self.value))
 
     def asDate(self):
         return self
@@ -826,7 +827,7 @@ class ValueDecimal(Value):
         return self
 
     def asDate(self):
-        return ValueDate(datetime.datetime.fromtimestamp(self.value))
+        return ValueDate(to_date(self.value))
 
     def asList(self):
         return ValueList().addItem(self)
@@ -956,7 +957,7 @@ class ValueInt(Value):
         return ValueBoolean.fromval(self.value != 0)
 
     def asDate(self):
-        return ValueDate(datetime.datetime.fromtimestamp(self.value))
+        return ValueDate(to_date(self.value))
 
     def asList(self):
         return ValueList().addItem(self)

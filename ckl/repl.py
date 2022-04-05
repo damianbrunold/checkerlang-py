@@ -34,7 +34,7 @@ def main():
             except CklSyntaxError as e:
                 print(e.msg + ((" (Line " + str(e.pos) + ")") if e.pos else ""))
 
-            line = input("> ")
+        line = input("> ")
 
 if __name__ == "__main__":
     main()

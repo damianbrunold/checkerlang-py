@@ -11,6 +11,7 @@ import subprocess
 
 from ckl.errors import CklRuntimeError
 from ckl.parser import parse_script
+from ckl.date import to_oa_date, to_date
 from ckl.values import (
     Args,
     StringInput,
@@ -577,9 +578,7 @@ class FuncAdd(ValueFunc):
 
         if a.isDate() and b.isNumerical():
             return ValueDate(
-                datetime.datetime.fromtimestamp(
-                    a.value.timestamp() + args.getAsDecimal("b").value
-                )
+                to_date(to_oa_date(a.value) + args.getAsDecimal("b").value)
             )
 
         if (a.isString() and b.isAtomic()) or (a.isAtomic() and b.isString()):
@@ -3865,12 +3864,10 @@ class FuncSub(ValueFunc):
 
         if a.isDate():
             if b.isDate():
-                diff = a.asInt().value - b.asInt().value
+                diff = to_oa_date(a.asInt()) - to_oa_date(b.asInt())
                 return ValueInt(diff)
             return ValueDate(
-                datetime.datetime.fromtimestamp(
-                    a.value.timestamp() - args.getAsDecimal("b").value
-                )
+                to_date(to_oa_date(a.value) - args.getAsDecimal("b").value)
             )
 
         if a.isNull() or b.isNull():
