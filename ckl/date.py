@@ -4,23 +4,23 @@ import math
 DAYS_PER_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 DAYS_EPOCH = 25569
 
-def isLeapYear(year):
+def is_leap_year(year):
     return (year % 4 == 0) and ((year % 100 != 0) or (year % 400 == 0))
 
-def yearDays(year):
-    return 366 if isLeapYear(year) else 365
+def year_days(year):
+    return 366 if is_leap_year(year) else 365
 
-def monthDays(year, month):
-    return 29 if isLeapYear(year) and month == 1 else DAYS_PER_MONTH[month]
+def month_days(year, month):
+    return 29 if is_leap_year(year) and month == 1 else DAYS_PER_MONTH[month]
 
 def to_oa_date(date):
     year = date.year
     result = 1
     for y in range(1900, year):
-        result += yearDays(y)
+        result += year_days(y)
     month = date.month - 1
     for m in range(month):
-        result += monthDays(year, m)
+        result += month_days(year, m)
     result += date.day
     result += date.hour / 24
     result += date.minute / 24 / 60
@@ -31,12 +31,12 @@ def to_oa_date(date):
 def to_date(oadate):
     value = oadate - DAYS_EPOCH
     year = 1970
-    while value > yearDays(year):
-        value -= yearDays(year)
+    while value > year_days(year):
+        value -= year_days(year)
         year += 1
     month = 0
-    while value > monthDays(year, month):
-        value -= monthDays(year, month)
+    while value >= month_days(year, month):
+        value -= month_days(year, month)
         month += 1
     day = math.trunc(value) + 1
     value = value - math.trunc(value)
