@@ -979,7 +979,7 @@ def parse_primary_expr(lexer, unary_minus=False):
         )
         result = invoke(lexer, result)
     elif token.type == "pattern":
-        result = NodeLiteral(ValuePattern(token.value[2, -2]), token.pos)
+        result = NodeLiteral(ValuePattern(token.value[2:-2]), token.pos)
         result = invoke(lexer, result)
     else:
         if token.value == "fn" and token.type == "keyword":

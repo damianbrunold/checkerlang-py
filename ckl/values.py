@@ -1499,7 +1499,7 @@ class ValueString(Value):
         return "string"
 
     def matches(self, pattern):
-        return re.match(pattern.asPattern.pattern, self.value) is not None
+        return re.match(pattern.asPattern().pattern, self.value) is not None
 
     def asString(self):
         return self

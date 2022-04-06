@@ -35,15 +35,15 @@ def getCollectionValue(collection, what):
     elif collection.isSet():
         return collection.value.sortedValues()
     elif collection.isMap() and what == "keys":
-        return collection.value.sortedKeys()
+        return sorted(collection.value.keys())
     elif collection.isMap() and what == "values":
-        return collection.value.sortedValues()
+        return sorted(collection.value.values())
     elif collection.isMap():
-        return convertEntries(collection.value.sortedEntries())
+        return convertEntries({k: collection.value[k] for k in sorted(collection.value.keys())})
     elif collection.isObject() and what == "values":
         return collection.value.values()
     elif collection.isObject() and what == "entries":
-        return convertEntries(collection.value.entries())
+        return convertEntries(collection.value)
     elif collection.isObject():
         return collection.keys()
     elif collection.isString():
@@ -400,7 +400,7 @@ class NodeDefDestructuring:
         if value.isList():
             values = value.value
         if value.isSet():
-            values = value.value.sortedValues()
+            values = value.getSortedItems()
         result = NULL
         for i in range(len(self.identifiers)):
             if i < len(values):
@@ -717,7 +717,7 @@ class NodeFor:
                     if value.isList():
                         vals = value.value
                     elif value.isSet():
-                        vals = value.value.sortedValues()
+                        vals = value.getSortedItems()
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
@@ -737,7 +737,7 @@ class NodeFor:
             return result
 
         if lst.isSet():
-            values = lst.value.sortedValues()
+            values = lst.getSortedItems()
             result = TRUE
             for value in values:
                 if len(self.identifiers) == 1:
@@ -746,7 +746,7 @@ class NodeFor:
                     if value.isList():
                         vals = value.value
                     elif value.isSet():
-                        vals = value.value.sortedValues()
+                        vals = value.getSortedItems()
                     for i in range(len(self.identifiers)):
                         environment.put(self.identifiers[i], vals[i])
                 result = self.block.evaluate(environment)
@@ -766,7 +766,7 @@ class NodeFor:
             return result
 
         if lst.isMap():
-            values = lst.value.sortedEntries()
+            values = [(k, lst.value[k]) for k in sorted(lst.value.keys())]
             result = TRUE
             for key, value in values:
                 val = value

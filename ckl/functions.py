@@ -151,7 +151,7 @@ class Environment:
                 return ValueDecimal(value)
             elif isinstance(value, bool):
                 return ValueBoolean.fromval(value)
-            elif isinstance(value, datetime):
+            elif isinstance(value, datetime.datetime):
                 return ValueDate(value)
             else:
                 return ValueString(str(value))
@@ -2115,13 +2115,13 @@ class FuncIsEmpty(ValueFunc):
         if obj.isString():
             return ValueBoolean.fromval(obj.value == "")
         if obj.isList():
-            return ValueBoolean.fromval(len(obj) == 0)
+            return ValueBoolean.fromval(len(obj.value) == 0)
         if obj.isSet():
-            return ValueBoolean.fromval(len(obj) == 0)
+            return ValueBoolean.fromval(len(obj.value) == 0)
         if obj.isMap():
-            return ValueBoolean.fromval(len(obj) == 0)
+            return ValueBoolean.fromval(len(obj.value) == 0)
         if obj.isObject():
-            return ValueBoolean.fromval(len(obj) == 0)
+            return ValueBoolean.fromval(len(obj.value) == 0)
         return FALSE
 
 
