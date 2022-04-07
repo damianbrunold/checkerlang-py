@@ -1,4 +1,6 @@
+import os
 import pkgutil
+import sys
 
 from ckl.errors import CklRuntimeError, CklSyntaxError
 from ckl.values import (
@@ -1632,13 +1634,30 @@ class NodeRequire:
             moduleEnv = modules[moduleidentifier]
         else:
             moduleEnv = environment.getBase().newEnv()
-            # TODO port this, careful with dependencies!
-            data = pkgutil.get_data(__name__, "modules/" + modulefile.lower())
+            try:
+                data = pkgutil.get_data(__name__, "modules/" + modulefile.lower())
+            except FileNotFoundError:
+                data = None
             if data:
                 modulesrc = data.decode("utf-8")
             else:
-                # TODO load module from filesystem (current workdir or modulepath!) if available
-                pass
+                filename = os.path.basename(modulefile)
+                modulepath = os.path.expanduser("~/.ckl/modules")
+                modulesrc = None
+                if os.path.exists(os.path.join(modulepath, filename)):
+                    with open(os.path.join(modulepath, filename), encoding="utf-8") as infile:
+                        modulesrc = infile.read()
+                elif environment.isDefined("checkerlang_module_path"):
+                    for modulepath in environment.get("checkerlang_module_path", self.pos).value:
+                        if os.path.exists(os.path.join(modulepath.value, filename)):
+                            with open(os.path.join(modulepath.value, filename), encoding="utf-8") as infile:
+                                modulesrc = infile.read()
+                                break
+                if modulesrc is None:
+                    raise CklRuntimeError(
+                            ValueString("ERROR"),
+                            f"Module {filename[:-4]} not found",
+                            self.pos)
             import ckl.parser
             node = ckl.parser.parse_script(modulesrc, "mod:" + modulefile[0:-4])
             node.evaluate(moduleEnv)

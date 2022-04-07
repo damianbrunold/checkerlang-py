@@ -1,14 +1,36 @@
+import os
+import sys
+
 from ckl.errors import CklSyntaxError, CklRuntimeError
-from ckl.values import NULL
+from ckl.values import ValueString, NULL
 
 import ckl.interpreter
 import ckl.parser
 
 def main():
-    # TODO secure, legacy flags
-    interpreter = ckl.interpreter.Interpreter(False, False)
-    # TODO module path
-    # TODO process files
+    secure = False
+    legacy = False
+    for arg in sys.argv:
+        if arg == "--secure":
+            secure = True
+        elif arg == "--legacy":
+            legacy = True    
+    interpreter = ckl.interpreter.Interpreter(secure, Legacy)
+
+    modulepath = ValueList()
+    for arg in sys.argv:
+        if arg.startswith("-I"):
+            modulepath.addItem(ValueString(arg[2:]))
+    interpreter.environment.put("checkerlang_module_path", modulepath)
+
+    for arg in sys.argv:
+        if arg in ["--secure", "--legacy"] or arg.startwith("-I"):
+            continue
+        if os.path.exists(arg):
+            with open(arg, encoding="utf-8") as infile:
+                script = infile.read()
+            interpreter.interpret(script, os.path.basename(arg))
+
     try:
         line = input("> ")
         while line != "exit":
