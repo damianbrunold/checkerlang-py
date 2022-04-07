@@ -1,6 +1,5 @@
 import os
 import pkgutil
-import sys
 
 from ckl.errors import CklRuntimeError, CklSyntaxError
 from ckl.values import (
@@ -41,7 +40,8 @@ def getCollectionValue(collection, what):
     elif collection.isMap() and what == "values":
         return sorted(collection.value.values())
     elif collection.isMap():
-        return convertEntries({k: collection.value[k] for k in sorted(collection.value.keys())})
+        return convertEntries({k: collection.value[k]
+                               for k in sorted(collection.value.keys())})
     elif collection.isObject() and what == "values":
         return collection.value.values()
     elif collection.isObject() and what == "entries":
@@ -195,7 +195,9 @@ class NodeAssignDestructuring:
         return result
 
     def __repr__(self):
-        identifiers = ",".join(str(identifier) for identifier in self.identifiers)
+        identifiers = ",".join(str(identifier)
+                               for identifier
+                               in self.identifiers)
         return f"([{identifiers!s}] = {self.expression})"
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
@@ -417,7 +419,9 @@ class NodeDefDestructuring:
         return result
 
     def __repr__(self):
-        identifiers = ",".join(str(identifier) for identifier in self.identifiers)
+        identifiers = ",".join(str(identifier)
+                               for identifier
+                               in self.identifiers)
         return f"(def [{identifiers!s}] = {self.expression})"
 
     def collectVars(self, freeVars, boundVars, additionalBoundVars):
@@ -1635,7 +1639,10 @@ class NodeRequire:
         else:
             moduleEnv = environment.getBase().newEnv()
             try:
-                data = pkgutil.get_data(__name__, "modules/" + modulefile.lower())
+                data = pkgutil.get_data(
+                        __name__,
+                        "modules/" + modulefile.lower()
+                )
             except FileNotFoundError:
                 data = None
             if data:
@@ -1644,13 +1651,18 @@ class NodeRequire:
                 filename = os.path.basename(modulefile)
                 modulepath = os.path.expanduser("~/.ckl/modules")
                 modulesrc = None
-                if os.path.exists(os.path.join(modulepath, filename)):
-                    with open(os.path.join(modulepath, filename), encoding="utf-8") as infile:
+                filepath = os.path.join(modulepath, filename)
+                if os.path.exists(filepath):
+                    with open(filepath, encoding="utf-8") as infile:
                         modulesrc = infile.read()
                 elif environment.isDefined("checkerlang_module_path"):
-                    for modulepath in environment.get("checkerlang_module_path", self.pos).value:
-                        if os.path.exists(os.path.join(modulepath.value, filename)):
-                            with open(os.path.join(modulepath.value, filename), encoding="utf-8") as infile:
+                    for modulepath in environment.get(
+                            "checkerlang_module_path",
+                            self.pos
+                    ).value:
+                        filepath = os.path.join(modulepath.value, filename)
+                        if os.path.exists(filepath):
+                            with open(filepath, encoding="utf-8") as infile:
                                 modulesrc = infile.read()
                                 break
                 if modulesrc is None:
@@ -1659,7 +1671,7 @@ class NodeRequire:
                             f"Module {filename[:-4]} not found",
                             self.pos)
             import ckl.parser
-            node = ckl.parser.parse_script(modulesrc, "mod:" + modulefile[0:-4])
+            node = ckl.parser.parse_script(modulesrc, "mod:"+modulefile[0:-4])
             node.evaluate(moduleEnv)
             modules[moduleidentifier] = moduleEnv
         environment.popModuleStack()

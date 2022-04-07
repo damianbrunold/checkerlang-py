@@ -2,10 +2,11 @@ import os
 import sys
 
 from ckl.errors import CklSyntaxError, CklRuntimeError
-from ckl.values import ValueString, NULL
+from ckl.values import ValueString, ValueList, NULL
 
 import ckl.interpreter
 import ckl.parser
+
 
 def main():
     secure = False
@@ -14,8 +15,8 @@ def main():
         if arg == "--secure":
             secure = True
         elif arg == "--legacy":
-            legacy = True    
-    interpreter = ckl.interpreter.Interpreter(secure, Legacy)
+            legacy = True
+    interpreter = ckl.interpreter.Interpreter(secure, legacy)
 
     modulepath = ValueList()
     for arg in sys.argv:
@@ -34,7 +35,7 @@ def main():
     try:
         line = input("> ")
         while line != "exit":
-            try: 
+            try:
                 ckl.parser.parse_script(line, "{stdin}")
             except CklSyntaxError as e:
                 if e.msg.startswith("Unexpected end of input"):
@@ -52,17 +53,20 @@ def main():
                     if value != NULL:
                         print(value)
                 except CklRuntimeError as e:
-                    print(str(e.value.asString().value) + ": " + e.msg + " (Line " + str(e.pos) + ")")
+                    print(str(e.value.asString().value)
+                          + ": " + e.msg
+                          + " (Line " + str(e.pos) + ")")
                     if e.stacktrace:
                         for st in e.stacktrace:
                             print(str(st))
                 except CklSyntaxError as e:
-                    print(e.msg + ((" (Line " + str(e.pos) + ")") if e.pos else ""))
+                    print(e.msg
+                          + ((" (Line " + str(e.pos) + ")") if e.pos else ""))
 
             line = input("> ")
     except EOFError:
         pass
 
+
 if __name__ == "__main__":
     main()
-

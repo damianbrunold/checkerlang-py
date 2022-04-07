@@ -2,13 +2,13 @@ import os
 import sys
 
 from ckl.values import (
-        ValueList, 
-        ValueString, 
-        NULL
+    ValueList,
+    ValueString,
+    NULL
 )
 from ckl.errors import (
-        CklSyntaxError,
-        CklRuntimeError
+    CklSyntaxError,
+    CklRuntimeError
 )
 from ckl.interpreter import Interpreter
 
@@ -68,7 +68,9 @@ try:
     if result != NULL:
         print(str(result))
 except CklRuntimeError as e:
-    print(str(e.value.asString().value) + ": " + e.msg + " (Line " + str(e.pos) + ")")
+    print(str(e.value.asString().value)
+          + ": " + e.msg
+          + " (Line " + str(e.pos) + ")")
     if e.stacktrace:
         for st in e.stacktrace:
             print(str(st))
