@@ -17,23 +17,18 @@ def main():
     parser.add_argument("scripts", nargs="*")
     args = parser.parse_args(sys.argv[1:])
 
-    secure = args.secure
-    legacy = args.legacy
-    scripts = args.scripts
-
     modulepath = ValueList()
     if args.modulepath:
         modulepath.addItem(ValueString(args.modulepath))
 
-    interpreter = ckl.interpreter.Interpreter(secure, legacy)
+    interpreter = ckl.interpreter.Interpreter(args.secure, args.legacy)
     interpreter.environment.put("checkerlang_module_path", modulepath)
 
-    if scripts:
-        for scriptfile in scripts:
-            if os.path.exists(scriptfile):
-                with open(scriptfile, encoding="utf-8") as infile:
-                    script = infile.read()
-                interpreter.interpret(script, os.path.basename(scriptfile))
+    for scriptfile in args.scripts:
+        if os.path.exists(scriptfile):
+            with open(scriptfile, encoding="utf-8") as infile:
+                script = infile.read()
+            interpreter.interpret(script, os.path.basename(scriptfile))
 
     try:
         line = input("> ")

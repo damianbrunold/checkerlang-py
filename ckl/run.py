@@ -23,34 +23,29 @@ def main():
     parser.add_argument("args", nargs="*")
     args = parser.parse_args(sys.argv[1:])
 
-    secure = args.secure
-    legacy = args.legacy
-    scriptname = args.script
-    scriptargs = args.args
-
     modulepath = ValueList()
     if args.modulepath:
         modulepath.addItem(ValueString(args.modulepath))
 
-    interpreter = Interpreter(secure, legacy)
+    interpreter = Interpreter(args.secure, args.legacy)
 
-    if not os.path.exists(scriptname):
-        print(f"File not found '{scriptname}'", file=sys.stderr)
+    if not os.path.exists(args.script):
+        print(f"File not found '{args.script}'", file=sys.stderr)
         sys.exit(1)
 
-    args = ValueList()
-    for scriptarg in scriptargs:
-        args.addItem(ValueString(scriptarg))
+    scriptargs = ValueList()
+    for scriptarg in args.args:
+        scriptargs.addItem(ValueString(scriptarg))
 
-    interpreter.environment.put("args", args)
-    interpreter.environment.put("scriptname", ValueString(scriptname))
+    interpreter.environment.put("args", scriptargs)
+    interpreter.environment.put("scriptname", ValueString(args.script))
     interpreter.environment.put("checkerlang_module_path", modulepath)
 
-    with open(scriptname, encoding="utf-8") as infile:
+    with open(args.script, encoding="utf-8") as infile:
         script = infile.read()
 
     try:
-        result = interpreter.interpret(script, scriptname)
+        result = interpreter.interpret(script, args.script)
         if result != NULL:
             print(str(result))
     except CklRuntimeError as e:
