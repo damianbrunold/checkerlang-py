@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 
@@ -9,28 +10,30 @@ import ckl.parser
 
 
 def main():
-    secure = False
-    legacy = False
-    for arg in sys.argv[1:]:
-        if arg == "--secure":
-            secure = True
-        elif arg == "--legacy":
-            legacy = True
-    interpreter = ckl.interpreter.Interpreter(secure, legacy)
+    parser = argparse.ArgumentParser(description="CKL repl")
+    parser.add_argument("-s", "--secure", action="store_true")
+    parser.add_argument("-l", "--legacy", action="store_true")
+    parser.add_argument("-m", "--modulepath", nargs="?")
+    parser.add_argument("scripts", nargs="*")
+    args = parser.parse_args(sys.argv[1:])
+
+    secure = args.secure
+    legacy = args.legacy
+    scripts = args.scripts
 
     modulepath = ValueList()
-    for arg in sys.argv[1:]:
-        if arg.startswith("-I"):
-            modulepath.addItem(ValueString(arg[2:]))
+    if args.modulepath:
+        modulepath.addItem(ValueString(args.modulepath))
+
+    interpreter = ckl.interpreter.Interpreter(secure, legacy)
     interpreter.environment.put("checkerlang_module_path", modulepath)
 
-    for arg in sys.argv[1:]:
-        if arg in ["--secure", "--legacy"] or arg.startswith("-I"):
-            continue
-        if os.path.exists(arg):
-            with open(arg, encoding="utf-8") as infile:
-                script = infile.read()
-            interpreter.interpret(script, os.path.basename(arg))
+    if scripts:
+        for scriptfile in scripts:
+            if os.path.exists(scriptfile):
+                with open(scriptfile, encoding="utf-8") as infile:
+                    script = infile.read()
+                interpreter.interpret(script, os.path.basename(scriptfile))
 
     try:
         line = input("> ")
