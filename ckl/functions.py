@@ -49,6 +49,11 @@ def get_none_environment():
 def get_base_environment(secure=True, legacy=True):
     result = get_none_environment()
     result.put("checkerlang_secure_mode", ValueBoolean.fromval(secure))
+    # MAXINT and MININT are kind of arbitrary, since python supports
+    # arbitrary precision numbers. But they are the largest values
+    # representable in 64bit.
+    result.put("MAXINT", 9223372036854775807)
+    result.put("MININT", -9223372036854775808)
     bind_native(result, "bind_native")
     result.put("NULL", NULL)
     if legacy:
@@ -2167,16 +2172,16 @@ class FuncIsNotEmpty(ValueFunc):
 
 class FuncIsNotNull(ValueFunc):
     def __init__(self):
-        super().__init__("is_not_None")
+        super().__init__("is_not_null")
         self.info = "\r\n".join(
             [
-                "is_not_None(obj)",
+                "is_not_null(obj)",
                 "",
                 "Returns TRUE, if the obj is not NULL.",
                 "",
-                ": is_not_None('') ==> TRUE",
-                ": is_not_None(1) ==> TRUE",
-                ": is_not_None(NULL) ==> FALSE",
+                ": is_not_null('') ==> TRUE",
+                ": is_not_null(1) ==> TRUE",
+                ": is_not_null(NULL) ==> FALSE",
             ]
         )
 
@@ -2189,16 +2194,16 @@ class FuncIsNotNull(ValueFunc):
 
 class FuncIsNull(ValueFunc):
     def __init__(self):
-        super().__init__("is_None")
+        super().__init__("is_null")
         self.info = "\r\n".join(
             [
                 "is_None(obj)",
                 "",
                 "Returns TRUE, if the obj is NULL.",
                 "",
-                ": is_None('') ==> FALSE",
-                ": is_None(1) ==> FALSE",
-                ": is_None(NULL) ==> TRUE",
+                ": is_null('') ==> FALSE",
+                ": is_null(1) ==> FALSE",
+                ": is_null(NULL) ==> TRUE",
             ]
         )
 
@@ -3436,6 +3441,7 @@ class FuncS(ValueFunc):
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'",
                 ": def n = 123; s('n = {n#x}') ==> 'n = 7b'",
                 ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'",
+                ": s('{1} { {2}') ==> '1 { 2'",
                 ": require Math; s('{Math->PI} is cool') ==> "
                 "'3.141592653589793 is cool'",
             ]
