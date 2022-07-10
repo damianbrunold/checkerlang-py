@@ -2,9 +2,8 @@
 from ckl.interpreter import Interpreter
 from ckl.values import ValueString
 
-interpreter = Interpreter(False, True)
-
 def run_test(test, expected):
+    interpreter = Interpreter(False, True)
     result = interpreter.interpret(test, '{test}')
     if not expected.startswith('<'):
         expected = interpreter.interpret(expected, '{info-test-expected}')

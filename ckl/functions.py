@@ -2841,6 +2841,11 @@ class FuncParseDate(ValueFunc):
             ):
                 date = datetime.datetime.fromtimestamp(0)
                 date = date.replace(microsecond=0)
+                date = date.replace(second=0)
+                date = date.replace(minute=0)
+                date = date.replace(hour=0)
+                date = date.replace(day=1)
+                date = date.replace(month=1)
                 try:
                     for part in vals:
                         if part == "yyyy":
