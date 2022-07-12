@@ -34,7 +34,7 @@ def getCollectionValue(collection, what):
     if collection.isList():
         return collection.value
     elif collection.isSet():
-        return collection.value.sortedValues()
+        return collection.getSortedItems()
     elif collection.isMap() and what == "keys":
         return sorted(collection.value.keys())
     elif collection.isMap() and what == "values":
@@ -702,11 +702,11 @@ class NodeFor:
                     elif result.isReturn():
                         break
                     line = input_.readLine()
-                if len(self.identifiers) == 1:
-                    environment.remove(self.identifiers[0])
-                else:
-                    for i in range(len(self.identifiers)):
-                        environment.remove(self.identifiers[i])
+                    if len(self.identifiers) == 1:
+                        environment.remove(self.identifiers[0])
+                    else:
+                        for i in range(len(self.identifiers)):
+                            environment.remove(self.identifiers[i])
             except Exception:
                 raise CklRuntimeError(
                     ValueString("ERROR"), "Cannot read from input", self.pos
@@ -735,11 +735,12 @@ class NodeFor:
                     # continue
                 elif result.isReturn():
                     break
-            if len(self.identifiers) == 1:
-                environment.remove(self.identifiers[0])
-            else:
-                for i in range(len(self.identifiers)):
-                    environment.remove(self.identifiers[i])
+            if values:
+                if len(self.identifiers) == 1:
+                    environment.remove(self.identifiers[0])
+                else:
+                    for i in range(len(self.identifiers)):
+                        environment.remove(self.identifiers[i])
             return result
 
         if lst.isSet():
@@ -764,11 +765,12 @@ class NodeFor:
                     # continue
                 elif result.isReturn():
                     break
-            if len(self.identifiers) == 1:
-                environment.remove(self.identifiers[0])
-            else:
-                for i in range(len(self.identifiers)):
-                    environment.remove(self.identifiers[i])
+            if values:
+                if len(self.identifiers) == 1:
+                    environment.remove(self.identifiers[0])
+                else:
+                    for i in range(len(self.identifiers)):
+                        environment.remove(self.identifiers[i])
             return result
 
         if lst.isMap():
@@ -802,11 +804,12 @@ class NodeFor:
                     # continue
                 elif result.isReturn():
                     break
-            if len(self.identifiers) == 1:
-                environment.remove(self.identifiers[0])
-            else:
-                for i in range(len(self.identifiers)):
-                    environment.remove(self.identifiers[i])
+            if values:
+                if len(self.identifiers) == 1:
+                    environment.remove(self.identifiers[0])
+                else:
+                    for i in range(len(self.identifiers)):
+                        environment.remove(self.identifiers[i])
             return result
 
         if lst.isObject():
@@ -840,11 +843,12 @@ class NodeFor:
                     # continue
                 elif result.isReturn():
                     break
-            if len(self.identifiers) == 1:
-                environment.remove(self.identifiers[0])
-            else:
-                for i in range(len(self.identifiers)):
-                    environment.remove(self.identifiers[i])
+            if values:
+                if len(self.identifiers) == 1:
+                    environment.remove(self.identifiers[0])
+                else:
+                    for i in range(len(self.identifiers)):
+                        environment.remove(self.identifiers[i])
             return result
 
         if lst.isString():

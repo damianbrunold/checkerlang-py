@@ -47,10 +47,10 @@ class Interpreter:
             env = self.environment
         else:
             environment_ = environment
-            while environment_ and environment_.getParent():
-                environment_ = environment_.getParent()
+            while environment_ and environment_.parent:
+                environment_ = environment_.parent
             if environment_:
-                savedParent = environment_.getParent()
+                savedParent = environment_.parent
                 environment_.withParent(self.environment)
             env = environment
         try:
@@ -65,7 +65,7 @@ class Interpreter:
         finally:
             if savedParent:
                 environment_ = environment
-                while environment_ and environment_.getParent():
-                    environment_ = environment_.getParent()
+                while environment_ and environment_.parent:
+                    environment_ = environment_.parent
                 if environment_:
                     environment_.withParent(savedParent)

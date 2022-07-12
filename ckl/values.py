@@ -338,21 +338,21 @@ class StringInput:
         return count
 
     def read(self):
-        if self.pos >= self.input.length:
+        if self.pos >= len(self.input):
             return None
         result = self.input[self.pos:self.pos+1]
         self.pos += 1
         return result
 
     def readAll(self):
-        if self.pos >= self.input.length:
+        if self.pos >= len(self.input):
             return None
         result = self.input[self.pos:]
-        self.pos = self.input.length
+        self.pos = len(self.input)
         return result
 
     def readLine(self):
-        if self.pos >= self.input.length:
+        if self.pos >= len(self.input):
             return None
         if self.input.find("\n", self.pos) != -1:
             result = self.input[self.pos:self.input.find("\n", self.pos)]
@@ -360,7 +360,7 @@ class StringInput:
             return result
         else:
             result = self.input[self.pos:]
-            self.pos = self.input.length
+            self.pos = len(self.input)
             return result
 
     def close(self):

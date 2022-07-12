@@ -1,9 +1,13 @@
 from ckl.interpreter import Interpreter
+from ckl.functions import get_none_environment
 
+interpreter = Interpreter(False, False)
 
 def interpreter_test(source, expected):
     assert (
-        repr(Interpreter(False, False).interpret(source, "{test}")) == expected
+        repr(interpreter.interpret(source, "{test}", get_none_environment()))
+        ==
+        expected
     )
 
 

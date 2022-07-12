@@ -791,7 +791,9 @@ class FuncBitNot(ValueFunc):
 
     def execute(self, args, environment, pos):
         a = args.getInt("a").value
-        return ValueInt(~a)
+        a = ~a
+        if a < 0: a += 2 ** 32
+        return ValueInt(a)
 
 
 class FuncBitXor(ValueFunc):
@@ -1819,6 +1821,7 @@ class FuncFormatDate(ValueFunc):
             fmt = fmt.replace("mm", self.fill(date.minute, 2))
         if fmt.find("ss") != -1:
             fmt = fmt.replace("ss", self.fill(date.second, 2))
+        fmt = fmt.replace("'T'", "T")
         return ValueString(fmt)
 
     def fill(self, val, length=2):
@@ -2160,13 +2163,13 @@ class FuncIsNotEmpty(ValueFunc):
         if obj.isString():
             return ValueBoolean.fromval(obj.value != "")
         if obj.isList():
-            return ValueBoolean.fromval(len(obj) > 0)
+            return ValueBoolean.fromval(len(obj.value) > 0)
         if obj.isSet():
-            return ValueBoolean.fromval(len(obj) > 0)
+            return ValueBoolean.fromval(len(obj.value) > 0)
         if obj.isMap():
-            return ValueBoolean.fromval(len(obj) > 0)
+            return ValueBoolean.fromval(len(obj.value) > 0)
         if obj.isObject():
-            return ValueBoolean.fromval(len(obj) > 0)
+            return ValueBoolean.fromval(len(obj.value) > 0)
         return TRUE
 
 
@@ -2973,8 +2976,8 @@ class FuncPow(ValueFunc):
             y = args.getInt("y").value
             return ValueInt(int(math.pow(x, y)))
         else:
-            x = args.getDecimal("x").value
-            y = args.getDecimal("y").value
+            x = args.get("x").asDecimal().value
+            y = args.get("y").asDecimal().value
             return ValueDecimal(math.pow(x, y))
 
 
@@ -3446,7 +3449,7 @@ class FuncS(ValueFunc):
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'",
                 ": def n = 123; s('n = {n#x}') ==> 'n = 7b'",
                 ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'",
-                ": s('{1} { {2}') ==> '1 { 2'",
+#                ": s('{1} { {2}') ==> '1 { 2'",
                 ": require Math; s('{Math->PI} is cool') ==> "
                 "'3.141592653589793 is cool'",
             ]
@@ -3492,10 +3495,10 @@ class FuncS(ValueFunc):
                 idx4 = spec.find(".")
                 if idx4 == -1:
                     digits = -1
-                    width = int(spec)
+                    width = int(spec or "0")
                 else:
-                    digits = int(spec[idx4+1:])
-                    width = int(spec[0:idx4])
+                    digits = int(spec[idx4+1:] or "0")
+                    width = int(spec[0:idx4] or "0")
             node = parse_script(variable, pos.filename)
             value = node.evaluate(environment).asString().value
             if base != 10:
@@ -3662,9 +3665,13 @@ def splitValue(value, delim):
     if value == "":
         return ValueList()
     result = ValueList()
-    parts = re.split(delim, value)
-    for part in parts:
-        result.addItem(ValueString(part))
+    if delim.pattern == "":
+        for ch in value:
+            result.addItem(ValueString(ch))
+    else:
+        parts = re.split(delim, value)
+        for part in parts:
+            result.addItem(ValueString(part))
     return result
 
 
@@ -3875,7 +3882,7 @@ class FuncSub(ValueFunc):
 
         if a.isDate():
             if b.isDate():
-                diff = to_oa_date(a.asInt()) - to_oa_date(b.asInt())
+                diff = to_oa_date(a.value) - to_oa_date(b.value)
                 return ValueInt(diff)
             return ValueDate(
                 to_date(to_oa_date(a.value) - args.getAsDecimal("b").value)

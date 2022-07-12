@@ -453,7 +453,7 @@ lines(str)
 
 Splits the string str into lines and returns them as a list.
 
-: lines('a\\\\nb c\\\\r\\\\nd') ==> ['a', 'b c', 'd']
+: lines('a\\nb c\\r\\nd') ==> ['a', 'b c', 'd']
 "
 def lines(str) do
   split(str, '\\r?\\n');

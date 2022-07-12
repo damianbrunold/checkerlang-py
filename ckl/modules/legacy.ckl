@@ -20,4 +20,5 @@ require String import [
     find as str_find,
     find_last as str_find_last,
     matches as str_matches,
-    trim as str_trim];
+    trim as str_trim
+];

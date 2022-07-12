@@ -4,6 +4,9 @@ from ckl.functions import get_base_environment
 from ckl.parser import parse_script
 
 
+env = get_base_environment()
+
+
 def get_freevars(node, environment):
     free_vars = []
     bound_vars = []
@@ -14,7 +17,7 @@ def get_freevars(node, environment):
 
 def collectvars_test(code, expected):
     assert (
-        get_freevars(parse_script(code, "{test}"), get_base_environment()) == expected
+        get_freevars(parse_script(code, "{test}"), env.newEnv()) == expected
     )
 
 
