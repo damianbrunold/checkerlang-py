@@ -29,7 +29,8 @@ class Args:
 
     def __repr__(self):
         return ", ".join(
-            [str(name) + "=" + repr(value) for name, value in self.args.items()]
+            [str(name) + "=" + repr(value)
+             for name, value in self.args.items()]
         )
 
     def toStringAbbrev(self):
@@ -1539,11 +1540,17 @@ class ValueString(Value):
             )
         try:
             if len(self.value) == 14:
-                return ValueDate(datetime.datetime.strptime(self.value, "%Y%m%d%H%M%S"))
+                return ValueDate(
+                    datetime.datetime.strptime(self.value, "%Y%m%d%H%M%S")
+                )
             elif len(self.value) == 10:
-                return ValueDate(datetime.datetime.strptime(self.value, "%Y%m%d%H"))
+                return ValueDate(
+                    datetime.datetime.strptime(self.value, "%Y%m%d%H")
+                )
             elif len(self.value) == 8:
-                return ValueDate(datetime.datetime.strptime(self.value, "%Y%m%d"))
+                return ValueDate(
+                    datetime.datetime.strptime(self.value, "%Y%m%d")
+                )
         except ValueError:
             raise CklRuntimeError(
                 ValueString("ERROR"),

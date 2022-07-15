@@ -225,7 +225,11 @@ def parse_statement(lexer, toplevel=False):
         else:
             # handle single var def
             token = lexer.next()
-            if token.type == "identifier" and token.value == "class" and lexer.peek().type == "identifier":
+            if (
+                token.type == "identifier" and
+                token.value == "class" and
+                lexer.peek().type == "identifier"
+            ):
                 token = lexer.next()
                 check_redefine_keyword(token)
                 check_expected_identifier(token)
@@ -264,11 +268,19 @@ def parse_statement(lexer, toplevel=False):
                 check_redefine_keyword(token)
                 check_expected_identifier(token)
                 if lexer.peekn(1, "(", "interpunction"):
-                    return NodeDef(token.value, parse_fn(lexer, pos), comment, pos)
+                    return NodeDef(
+                        token.value,
+                        parse_fn(lexer, pos),
+                        comment,
+                        pos
+                    )
                 else:
                     lexer.match("=", "operator")
                     return NodeDef(
-                        token.value, parse_expression(lexer), comment, pos
+                        token.value,
+                        parse_expression(lexer),
+                        comment,
+                        pos
                     )
 
     if lexer.matchIf("for", "keyword"):
@@ -452,7 +464,10 @@ def parse_pred_expr(lexer, unary_minus=False):
     if lexer.matchIf("is", "keyword"):
         if lexer.matchIf("not", "keyword"):
             if lexer.matchIf("in"):
-                return NodeNot(NodeIn(expr, parse_primary_expr(lexer), pos), pos)
+                return NodeNot(
+                    NodeIn(expr, parse_primary_expr(lexer), pos),
+                    pos
+                )
             elif lexer.matchIf("empty", "identifier"):
                 return NodeNot(func_call("is_empty", expr, None, pos), pos)
             elif lexer.matchIf("zero", "identifier"):
@@ -951,7 +966,8 @@ def parse_primary_expr(lexer, unary_minus=False):
     if token.type == "identifier":
         result = NodeIdentifier(token.value, token.pos)
         if lexer.matchIf("=", "operator"):
-            result = NodeAssign(token.value, parse_expression(lexer), token.pos)
+            result = NodeAssign(
+                token.value, parse_expression(lexer), token.pos)
         elif lexer.matchIf("+=", "operator"):
             value = parse_expression(lexer)
             result = NodeAssign(
@@ -1421,7 +1437,8 @@ def _deref(lexer, node):
             node = NodeDerefAssign(
                 node,
                 index,
-                func_call("add", NodeDeref(node, index, None, pos), value, pos),
+                func_call("add", NodeDeref(
+                    node, index, None, pos), value, pos),
                 pos,
             )
             interrupt = True
@@ -1430,7 +1447,8 @@ def _deref(lexer, node):
             node = NodeDerefAssign(
                 node,
                 index,
-                func_call("sub", NodeDeref(node, index, None, pos), value, pos),
+                func_call("sub", NodeDeref(
+                    node, index, None, pos), value, pos),
                 pos,
             )
             interrupt = True
@@ -1439,7 +1457,8 @@ def _deref(lexer, node):
             node = NodeDerefAssign(
                 node,
                 index,
-                func_call("mul", NodeDeref(node, index, None, pos), value, pos),
+                func_call("mul", NodeDeref(
+                    node, index, None, pos), value, pos),
                 pos,
             )
             interrupt = True
@@ -1448,7 +1467,8 @@ def _deref(lexer, node):
             node = NodeDerefAssign(
                 node,
                 index,
-                func_call("div", NodeDeref(node, index, None, pos), value, pos),
+                func_call("div", NodeDeref(
+                    node, index, None, pos), value, pos),
                 pos,
             )
             interrupt = True
@@ -1457,7 +1477,8 @@ def _deref(lexer, node):
             node = NodeDerefAssign(
                 node,
                 index,
-                func_call("mod", NodeDeref(node, index, None, pos), value, pos),
+                func_call("mod", NodeDeref(
+                    node, index, None, pos), value, pos),
                 pos,
             )
             interrupt = True

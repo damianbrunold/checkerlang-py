@@ -57,7 +57,8 @@ def get_base_environment(secure=True, legacy=True):
     bind_native(result, "bind_native")
     result.put("NULL", NULL)
     if legacy:
-        script = pkgutil.get_data(__name__, "modules/legacy.ckl").decode("utf-8")
+        script = pkgutil.get_data(
+            __name__, "modules/legacy.ckl").decode("utf-8")
         parse_script(script, ":legacy").evaluate(result)
     else:
         script = pkgutil.get_data(__name__, "modules/base.ckl").decode("utf-8")
@@ -792,7 +793,8 @@ class FuncBitNot(ValueFunc):
     def execute(self, args, environment, pos):
         a = args.getInt("a").value
         a = ~a
-        if a < 0: a += 2 ** 32
+        if a < 0:
+            a += 2 ** 32
         return ValueInt(a)
 
 
@@ -3449,7 +3451,7 @@ class FuncS(ValueFunc):
                 ": s('2x3 = {2*3}') ==> '2x3 = 6'",
                 ": def n = 123; s('n = {n#x}') ==> 'n = 7b'",
                 ": def n = 255; s('n = {n#04x}') ==> 'n = 00ff'",
-#                ": s('{1} { {2}') ==> '1 { 2'",
+                #                ": s('{1} { {2}') ==> '1 { 2'",
                 ": require Math; s('{Math->PI} is cool') ==> "
                 "'3.141592653589793 is cool'",
             ]

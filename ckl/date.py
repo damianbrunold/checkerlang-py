@@ -4,14 +4,18 @@ import math
 DAYS_PER_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 DAYS_EPOCH = 25569
 
+
 def is_leap_year(year):
     return (year % 4 == 0) and ((year % 100 != 0) or (year % 400 == 0))
+
 
 def year_days(year):
     return 366 if is_leap_year(year) else 365
 
+
 def month_days(year, month):
     return 29 if is_leap_year(year) and month == 1 else DAYS_PER_MONTH[month]
+
 
 def to_oa_date(date):
     year = date.year
@@ -27,6 +31,7 @@ def to_oa_date(date):
     result += date.second / 24 / 60 / 60
     result += date.microsecond / 24 / 60 / 60 / 1000 / 1000
     return result
+
 
 def to_date(oadate):
     value = oadate - DAYS_EPOCH
@@ -49,11 +54,11 @@ def to_date(oadate):
     microseconds = math.trunc(value * 1000 * 1000)
     result = datetime.datetime.fromtimestamp(0)
     return result.replace(
-            year=year,
-            month=month+1,
-            day=day,
-            hour=hours,
-            minute=minutes,
-            second=seconds,
-            microsecond=microseconds
+        year=year,
+        month=month+1,
+        day=day,
+        hour=hours,
+        minute=minutes,
+        second=seconds,
+        microsecond=microseconds
     )

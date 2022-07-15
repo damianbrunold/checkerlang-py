@@ -688,27 +688,36 @@ class NodeDerefSlice:
         value = self.expression.evaluate(environment)
         start = self.start.evaluate(environment)
         end = self.end and self.end.evaluate(environment)
-        
-        if value == NULL: return NULL
+
+        if value == NULL:
+            return NULL
 
         if value.isString():
             s = value.value
             start = int(start.value)
             end = int(end.value) if end else len(s)
-            if start < 0: start += len(s)
-            if end < 0: end += len(s)
-            if start < 0: start = 0
-            if end > len(s): end = len(s)
+            if start < 0:
+                start += len(s)
+            if end < 0:
+                end += len(s)
+            if start < 0:
+                start = 0
+            if end > len(s):
+                end = len(s)
             return ValueString(s[start:end])
 
         if value.isList():
             lst = value.value
             start = int(start.value)
             end = int(end.value) if end else len(lst)
-            if start < 0: start += len(lst)
-            if end < 0: end += len(lst)
-            if start < 0: start = 0
-            if end > len(lst): end = len(lst)
+            if start < 0:
+                start += len(lst)
+            if end < 0:
+                end += len(lst)
+            if start < 0:
+                start = 0
+            if end > len(lst):
+                end = len(lst)
             result = ValueList()
             for i in range(start, end):
                 result.addItem(lst[i])
@@ -1725,8 +1734,8 @@ class NodeRequire:
             moduleEnv = environment.getBase().newEnv()
             try:
                 data = pkgutil.get_data(
-                        __name__,
-                        "modules/" + modulefile.lower()
+                    __name__,
+                    "modules/" + modulefile.lower()
                 )
             except FileNotFoundError:
                 data = None
@@ -1752,9 +1761,9 @@ class NodeRequire:
                                 break
                 if modulesrc is None:
                     raise CklRuntimeError(
-                            ValueString("ERROR"),
-                            f"Module {filename[:-4]} not found",
-                            self.pos)
+                        ValueString("ERROR"),
+                        f"Module {filename[:-4]} not found",
+                        self.pos)
             import ckl.parser
             node = ckl.parser.parse_script(modulesrc, "mod:"+modulefile[0:-4])
             node.evaluate(moduleEnv)

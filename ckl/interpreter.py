@@ -4,18 +4,16 @@ import sys
 from ckl.errors import CklRuntimeError
 from ckl.parser import parse_script
 from ckl.functions import (
-    Environment, 
-    get_base_environment, 
+    get_base_environment,
     FuncRun,
 )
 from ckl.values import (
-    StringInput,
-    StringOutput,
     ConsoleOutput,
     ValueInput,
     ValueOutput,
     ValueString,
 )
+
 
 class Interpreter:
     def __init__(self, secure=True, legacy=False):
@@ -39,7 +37,7 @@ class Interpreter:
             enc = 'utf8'
         with open(filename, encoding=encoding) as infile:
             contents = infile.read()
-        return interpret(contents, os.path.basename(filename))
+        return self.interpret(contents, os.path.basename(filename))
 
     def interpret(self, script, filename, environment=None):
         savedParent = None
@@ -58,9 +56,17 @@ class Interpreter:
             if result.isReturn():
                 return result.value
             elif result.isBreak():
-                raise CklRuntimeError(ValueString("ERROR"), "Cannot use break without surrounding loop", result.asBreak().pos)
+                raise CklRuntimeError(
+                    ValueString("ERROR"),
+                    "Cannot use break without surrounding loop",
+                    result.asBreak().pos
+                )
             elif result.isContinue():
-                raise CklRuntimeError(ValueString("ERROR"), "Cannot use continue without surrounding loop", result.asContinue().pos)
+                raise CklRuntimeError(
+                    ValueString("ERROR"),
+                    "Cannot use continue without surrounding loop",
+                    result.asContinue().pos
+                )
             return result
         finally:
             if savedParent:
