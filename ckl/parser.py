@@ -52,6 +52,20 @@ from ckl.nodes import (
 )
 
 
+def check_redefine_keyword(token):
+    if token.type == "keyword":
+        raise CklSyntaxError(
+            f"Cannot redefine keyword '{token}'", token.pos
+        )
+
+
+def check_expected_identifier(token):
+    if token.type != "identifier":
+        raise CklSyntaxError(
+            f"Expected identifier but got '{token}'", token.pos
+        )
+
+
 def parse_script(script, filename="-"):
     return parse(Lexer(script, filename).scan())
 
@@ -198,14 +212,8 @@ def parse_statement(lexer, toplevel=False):
             identifiers = []
             while not lexer.peekn(1, "]", "interpunction"):
                 token = lexer.next()
-                if token.type == "keyword":
-                    raise CklSyntaxError(
-                        f"Cannot redefine keyword '{token}'", token.pos
-                    )
-                if token.type != "identifier":
-                    raise CklSyntaxError(
-                        f"Expected identifier but got '{token}'", token.pos
-                    )
+                check_redefine_keyword(token)
+                check_expected_identifier(token)
                 identifiers.append(token.value)
                 if not lexer.peekn(1, "]", "interpunction"):
                     lexer.match(",", "interpunction")
@@ -219,30 +227,16 @@ def parse_statement(lexer, toplevel=False):
             token = lexer.next()
             if token.type == "identifier" and token.value == "class" and lexer.peek().type == "identifier":
                 token = lexer.next()
-                if token.type == "keyword":
-                    raise CklSyntaxError(
-                        f"Cannot redefine keyword '{token}'", token.pos
-                    )
-                if token.type != "identifier":
-                    raise CklSyntaxError(
-                        f"Expected identifier but got '{token}'", token.pos
-                    )
+                check_redefine_keyword(token)
+                check_expected_identifier(token)
                 lexer.match("do", "keyword")
                 result = NodeClass(token.value, pos)
                 while not lexer.peekn(1, "end", "keyword"):
                     if lexer.matchIf("def", "keyword"):
                         pos = lexer.getPos()
                         token = lexer.next()
-                        if token.type == "keyword":
-                            raise CklSyntaxError(
-                                f"Cannot redefine keyword '{token}'",
-                                token.pos
-                            )
-                        if token.type != "identifier":
-                            raise CklSyntaxError(
-                                f"Expected identifier but got '{token}'",
-                                token.pos
-                            )
+                        check_redefine_keyword(token)
+                        check_expected_identifier(token)
                         if lexer.peekn(1, "(", "interpunction"):
                             result.addMember(
                                 NodeDef(
@@ -267,14 +261,8 @@ def parse_statement(lexer, toplevel=False):
                 lexer.match("end", "keyword")
                 return result
             else:
-                if token.type == "keyword":
-                    raise CklSyntaxError(
-                        f"Cannot redefine keyword '{token}'", token.pos
-                    )
-                if token.type != "identifier":
-                    raise CklSyntaxError(
-                        f"Expected identifier but got '{token}'", token.pos
-                    )
+                check_redefine_keyword(token)
+                check_expected_identifier(token)
                 if lexer.peekn(1, "(", "interpunction"):
                     return NodeDef(token.value, parse_fn(lexer, pos), comment, pos)
                 else:
@@ -289,23 +277,14 @@ def parse_statement(lexer, toplevel=False):
         if lexer.matchIf("[", "interpunction"):
             while not lexer.peekn(1, "]", "interpunction"):
                 token = lexer.next()
-                if token.type != "identifier":
-                    raise CklSyntaxError(
-                        f"Expected identifier in "
-                        f"for loop but got '{token}'",
-                        token.pos,
-                    )
+                check_expected_identifier(token)
                 identifiers.append(token.value)
                 if not lexer.peekn(1, "]", "interpunction"):
                     lexer.match(",", "interpunction")
             lexer.match("]", "interpunction")
         else:
             token = lexer.next()
-            if token.type != "identifier":
-                raise CklSyntaxError(
-                    f"Expected identifier in for loop but got '{token}'",
-                    token.pos,
-                )
+            check_expected_identifier(token)
             identifiers.append(token.value)
         lexer.match("in", "keyword")
         what = "values"
@@ -1335,15 +1314,8 @@ def parse_fn(lexer, pos):
     lexer.match("(", "interpunction")
     while not lexer.matchIf(")", "interpunction"):
         token = lexer.next()
-        if token.type == "keyword":
-            raise CklSyntaxError(
-                f"Cannot use keyword '{token}' as parameter name",
-                token.pos,
-            )
-        if token.type != "identifier":
-            raise CklSyntaxError(
-                f"Expected parameter name but got '{token}'", token.pos
-            )
+        check_redefine_keyword(token)
+        check_expected_identifier(token)
         argname = token.value
         defvalue = None
         if lexer.matchIf("=", "operator"):
