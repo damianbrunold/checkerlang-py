@@ -1215,3 +1215,19 @@ def test_MapDefaultValue():
 
 def test_MapIncrementDefaultValue():
     interpreter_test("def m = <<<>>>; m['a', 0] += 1; m['a']", "1")
+
+
+def test_class():
+    interpreter_test("\
+        def class Test do \
+            def _init_(self, x) do \
+                self->x = x; \
+            end; \
+            def f(self, n) do \
+              self->x * n; \
+            end; \
+        end; \
+        def t = new(Test, 12); \
+        t->f(3)",
+        "36"
+    )

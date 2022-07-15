@@ -344,6 +344,35 @@ class NodeBreak:
         pass
 
 
+class NodeClass:
+    def __init__(self, identifier, pos):
+        self.identifier = identifier
+        self.members = []
+        self.pos = pos
+
+    def addMember(self, member):
+        self.members.append(member)
+
+    def evaluate(self, environment):
+        result = ValueObject()
+        for member in self.members:
+            result.addItem(member.identifier, member.evaluate(environment))
+        environment.put(self.identifier, result)
+        return result
+
+    def __repr__(self):
+        return (
+            f"(class {self.identifier} "
+            f"{' '.join([str(m) for m in self.members])})"
+        )
+
+    def collectVars(self, freeVars, boundVars, additionalBoundVars):
+        for member in self.members:
+            member.collectVars(freeVars, boundVars, additionalBoundVars)
+        if boundVars not in (self.identifier):
+            boundVars.append(self.identifier)
+
+
 class NodeContinue:
     def __init__(self, pos):
         self.pos = pos

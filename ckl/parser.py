@@ -15,6 +15,7 @@ from ckl.nodes import (
     NodeAssignDestructuring,
     NodeBlock,
     NodeBreak,
+    NodeClass,
     NodeContinue,
     NodeDef,
     NodeDeref,
@@ -215,21 +216,71 @@ def parse_statement(lexer, toplevel=False):
         else:
             # handle single var def
             token = lexer.next()
-            if token.type == "keyword":
-                raise CklSyntaxError(
-                    f"Cannot redefine keyword '{token}'", token.pos
-                )
-            if token.type != "identifier":
-                raise CklSyntaxError(
-                    f"Expected identifier but got '{token}'", token.pos
-                )
-            if lexer.peekn(1, "(", "interpunction"):
-                return NodeDef(token.value, parse_fn(lexer, pos), comment, pos)
+            if token.type == "identifier" and token.value == "class" and lexer.peek().type == "identifier":
+                token = lexer.next()
+                if token.type == "keyword":
+                    raise CklSyntaxError(
+                        f"Cannot redefine keyword '{token}'", token.pos
+                    )
+                if token.type != "identifier":
+                    raise CklSyntaxError(
+                        f"Expected identifier but got '{token}'", token.pos
+                    )
+                lexer.match("do", "keyword")
+                result = NodeClass(token.value, pos)
+                while not lexer.peekn(1, "end", "keyword"):
+                    if lexer.matchIf("def", "keyword"):
+                        pos = lexer.getPos()
+                        token = lexer.next()
+                        if token.type == "keyword":
+                            raise CklSyntaxError(
+                                f"Cannot redefine keyword '{token}'",
+                                token.pos
+                            )
+                        if token.type != "identifier":
+                            raise CklSyntaxError(
+                                f"Expected identifier but got '{token}'",
+                                token.pos
+                            )
+                        if lexer.peekn(1, "(", "interpunction"):
+                            result.addMember(
+                                NodeDef(
+                                    token.value,
+                                    parse_fn(lexer, pos),
+                                    comment,
+                                    pos
+                                )
+                            )
+                        else:
+                            lexer.match("=", "operator")
+                            result.addMember(
+                                NodeDef(
+                                    token.value,
+                                    parse_expression(lexer),
+                                    comment,
+                                    pos
+                                )
+                            )
+                        if lexer.peekn(1, ";", "interpunction"):
+                            lexer.match(";", "interpunction")
+                lexer.match("end", "keyword")
+                return result
             else:
-                lexer.match("=", "operator")
-                return NodeDef(
-                    token.value, parse_expression(lexer), comment, pos
-                )
+                if token.type == "keyword":
+                    raise CklSyntaxError(
+                        f"Cannot redefine keyword '{token}'", token.pos
+                    )
+                if token.type != "identifier":
+                    raise CklSyntaxError(
+                        f"Expected identifier but got '{token}'", token.pos
+                    )
+                if lexer.peekn(1, "(", "interpunction"):
+                    return NodeDef(token.value, parse_fn(lexer, pos), comment, pos)
+                else:
+                    lexer.match("=", "operator")
+                    return NodeDef(
+                        token.value, parse_expression(lexer), comment, pos
+                    )
 
     if lexer.matchIf("for", "keyword"):
         pos = lexer.getPos()
