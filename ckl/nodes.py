@@ -677,6 +677,58 @@ class NodeDerefInvoke:
             arg.collectVars(freeVars, boundVars, additionalBoundVars)
 
 
+class NodeDerefSlice:
+    def __init__(self, expression, start, end, pos):
+        self.expression = expression
+        self.start = start
+        self.end = end
+        self.pos = pos
+
+    def evaluate(self, environment):
+        value = self.expression.evaluate(environment)
+        start = self.start.evaluate(environment)
+        end = self.end and self.end.evaluate(environment)
+        
+        if value == NULL: return NULL
+
+        if value.isString():
+            s = value.value
+            start = int(start.value)
+            end = int(end.value) if end else len(s)
+            if start < 0: start += len(s)
+            if end < 0: end += len(s)
+            if start < 0: start = 0
+            if end > len(s): end = len(s)
+            return ValueString(s[start:end])
+
+        if value.isList():
+            lst = value.value
+            start = int(start.value)
+            end = int(end.value) if end else len(lst)
+            if start < 0: start += len(lst)
+            if end < 0: end += len(lst)
+            if start < 0: start = 0
+            if end > len(lst): end = len(lst)
+            result = ValueList()
+            for i in range(start, end):
+                result.addItem(lst[i])
+            return result
+
+        raise CklRuntimeError(
+            ValueString("ERROR"),
+            f"Cannot slice ${value.type()}",
+            self.pos,
+        )
+
+    def __repr__(self):
+        return f"{self.expression}[{self.start} to {self.end}]"
+
+    def collectVars(self, freeVars, boundVars, additionalBoundVars):
+        self.expression.collectVars(freeVars, boundVars, additionalBoundVars)
+        self.start.collectVars(freeVars, boundVars, additionalBoundVars)
+        self.end.collectVars(freeVars, boundVars, additionalBoundVars)
+
+
 class NodeError:
     def __init__(self, expression, pos):
         self.expression = expression

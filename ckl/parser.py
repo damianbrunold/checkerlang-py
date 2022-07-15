@@ -21,6 +21,7 @@ from ckl.nodes import (
     NodeDeref,
     NodeDerefAssign,
     NodeDerefInvoke,
+    NodeDerefSlice,
     NodeDefDestructuring,
     NodeError,
     NodeFor,
@@ -1493,86 +1494,93 @@ def _deref(lexer, node):
     elif lexer.matchIf("[", "interpunction"):
         pos = lexer.getPos()
         index = parse_expression(lexer)
-        default_value = None
-        if lexer.matchIf(",", "interpunction"):
-            default_value = parse_expression(lexer)
-        if lexer.matchIf(["]", "="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(node, index, value, pos)
-            interrupt = True
-        elif lexer.matchIf(["]", "+="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(
-                node,
-                index,
-                func_call(
-                    "add",
-                    NodeDeref(node, index, default_value, pos),
-                    value,
-                    pos,
-                ),
-                pos,
-            )
-            interrupt = True
-        elif lexer.matchIf(["]", "-="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(
-                node,
-                index,
-                func_call(
-                    "sub",
-                    NodeDeref(node, index, default_value, pos),
-                    value,
-                    pos,
-                ),
-                pos,
-            )
-            interrupt = True
-        elif lexer.matchIf(["]", "*="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(
-                node,
-                index,
-                func_call(
-                    "mul",
-                    NodeDeref(node, index, default_value, pos),
-                    value,
-                    pos,
-                ),
-                pos,
-            )
-            interrupt = True
-        elif lexer.matchIf(["]", "/="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(
-                node,
-                index,
-                func_call(
-                    "div",
-                    NodeDeref(node, index, default_value, pos),
-                    value,
-                    pos,
-                ),
-                pos,
-            )
-            interrupt = True
-        elif lexer.matchIf(["]", "%="], ["interpunction", "operator"]):
-            value = parse_expression(lexer)
-            node = NodeDerefAssign(
-                node,
-                index,
-                func_call(
-                    "mod",
-                    NodeDeref(node, index, default_value, pos),
-                    value,
-                    pos,
-                ),
-                pos,
-            )
-            interrupt = True
-        else:
-            node = NodeDeref(node, index, default_value, pos)
+        if lexer.matchIf("to", "identifier"):
+            end = None
+            if not lexer.matchIf("*", "operator"):
+                end = parse_expression(lexer)
+            node = NodeDerefSlice(node, index, end, pos)
             lexer.match("]", "interpunction")
+        else:
+            default_value = None
+            if lexer.matchIf(",", "interpunction"):
+                default_value = parse_expression(lexer)
+            if lexer.matchIf(["]", "="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(node, index, value, pos)
+                interrupt = True
+            elif lexer.matchIf(["]", "+="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(
+                    node,
+                    index,
+                    func_call(
+                        "add",
+                        NodeDeref(node, index, default_value, pos),
+                        value,
+                        pos,
+                    ),
+                    pos,
+                )
+                interrupt = True
+            elif lexer.matchIf(["]", "-="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(
+                    node,
+                    index,
+                    func_call(
+                        "sub",
+                        NodeDeref(node, index, default_value, pos),
+                        value,
+                        pos,
+                    ),
+                    pos,
+                )
+                interrupt = True
+            elif lexer.matchIf(["]", "*="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(
+                    node,
+                    index,
+                    func_call(
+                        "mul",
+                        NodeDeref(node, index, default_value, pos),
+                        value,
+                        pos,
+                    ),
+                    pos,
+                )
+                interrupt = True
+            elif lexer.matchIf(["]", "/="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(
+                    node,
+                    index,
+                    func_call(
+                        "div",
+                        NodeDeref(node, index, default_value, pos),
+                        value,
+                        pos,
+                    ),
+                    pos,
+                )
+                interrupt = True
+            elif lexer.matchIf(["]", "%="], ["interpunction", "operator"]):
+                value = parse_expression(lexer)
+                node = NodeDerefAssign(
+                    node,
+                    index,
+                    func_call(
+                        "mod",
+                        NodeDeref(node, index, default_value, pos),
+                        value,
+                        pos,
+                    ),
+                    pos,
+                )
+                interrupt = True
+            else:
+                node = NodeDeref(node, index, default_value, pos)
+                lexer.match("]", "interpunction")
     return [node, interrupt]
 
 

@@ -1231,3 +1231,47 @@ def test_class():
         t->f(3)",
         "36"
     )
+
+
+def test_slice_string1():
+    interpreter_test("'abcdef'[1 to 3]", "'bc'")
+
+
+def test_slice_string2():
+    interpreter_test("'abcdef'[1 to -1]", "'bcde'")
+
+
+def test_slice_string3():
+    interpreter_test("'abcdef'[1 to 99]", "'bcdef'")
+
+
+def test_slice_string4():
+    interpreter_test("'abcdef'[range(4)[1] to 6-2*1]", "'bcd'")
+
+
+def test_slice_string5():
+    interpreter_test("def s = 'abcdef'; s[0 to length(s)/2]", "'abc'")
+
+
+def test_slice_list1():
+    interpreter_test("[1, 2, 3, 4, 5][1 to 3]", "[2, 3]")
+
+
+def test_slice_list2():
+    interpreter_test("range(6)[2 to -1]", "[2, 3, 4]")
+
+
+def test_slice_list3():
+    interpreter_test("range(6)[2 to *]", "[2, 3, 4, 5]")
+
+
+def test_slice_list4():
+    interpreter_test("range(6)[0 to 99]", "[0, 1, 2, 3, 4, 5]")
+
+
+def test_slice_list5():
+    interpreter_test("range(6)[-3 to -1]", "[3, 4]")
+
+
+def test_slice_list6():
+    interpreter_test("range(6)[-99 to -1]", "[0, 1, 2, 3, 4]")
