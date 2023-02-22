@@ -1,0 +1,2 @@
+graft ckl/modules
+global-exclude *.pyc
