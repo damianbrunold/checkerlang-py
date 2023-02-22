@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-        name="checkerlang-py", 
+        name="ckl", 
         version="3.5.2",
         author="Damian Brunold",
         author_email="dab@dabsoft.ch",
