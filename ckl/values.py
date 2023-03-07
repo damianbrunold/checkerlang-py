@@ -417,7 +417,7 @@ class ConsoleOutput:
 
 class FileInput:
     def __init__(self, filename, encoding):
-        self.encoding = encoding.toLowerCase()
+        self.encoding = encoding.lower()
         if self.encoding == "utf-8":
             self.encoding = "utf8"
         # TODO rewrite to use open stream instead of reading all in at start.
@@ -442,7 +442,7 @@ class FileInput:
 
 class FileOutput:
     def __init__(self, filename, encoding, append):
-        self.encoding = encoding.toLowerCase()
+        self.encoding = encoding.lower()
         if self.encoding == "utf-8":
             self.encoding = "utf8"
         flags = "w"

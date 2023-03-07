@@ -32,7 +32,7 @@ class Interpreter:
         self.base_environment.put("stdin", ValueInput(stdin))
 
     def loadFile(self, filename, encoding="utf8"):
-        enc = encoding.toLowerCase()
+        enc = encoding.lower()
         if enc == 'utf-8':
             enc = 'utf8'
         with open(filename, encoding=encoding) as infile:
