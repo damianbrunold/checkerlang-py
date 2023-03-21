@@ -564,11 +564,11 @@ class FuncAdd(ValueFunc):
             if b.isCollection():
                 return (
                     ValueSet()
-                    .addItems(a.asSet().value.values())
-                    .addItems(b.asSet().value.values())
+                    .addItems(a.asSet().value)
+                    .addItems(b.asSet().value)
                 )
             else:
-                return ValueSet().addItems(a.asSet().value.values()).addItem(b)
+                return ValueSet().addItems(a.asSet().value).addItem(b)
 
         if b.isList():
             result = ValueList()
@@ -579,7 +579,7 @@ class FuncAdd(ValueFunc):
         if b.isSet():
             result = ValueSet()
             result.addItem(a)
-            result.addItems(b.asSet().value.values())
+            result.addItems(b.asSet().value)
             return result
 
         if a.isDate() and b.isNumerical():
