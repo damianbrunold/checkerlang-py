@@ -1,4 +1,4 @@
-def checkerlang_version = "3.5.2";
+def checkerlang_version = "3.5.6";
 def checkerlang_platform = "py";
 
 def checkerlang_modules = ["Bitwise", "Core", "Date", "IO", "List", "Math", "OS", "Predicate", "Random", "Set", "String", "Stat", "Sys", "Type"];
