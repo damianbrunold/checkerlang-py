@@ -2417,11 +2417,11 @@ class FuncListDir(ValueFunc):
             if include_dirs or not isdir:
                 path = file
                 if include_path:
-                    path = self.path.join(dirname, path)
+                    path = os.path.join(dirname, path)
                 result.addItem(ValueString(path))
             if recursive and isdir:
                 self.collectFiles(
-                    self.path.join(dirname, file),
+                    os.path.join(dirname, file),
                     recursive,
                     include_path,
                     include_dirs,

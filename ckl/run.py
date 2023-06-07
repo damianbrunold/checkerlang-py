@@ -50,7 +50,7 @@ def main():
             print(str(result))
     except CklRuntimeError as e:
         print(str(e.value.asString().value)
-              + ": " + e.msg
+              + ": " + str(e.msg)
               + " (Line " + str(e.pos) + ")")
         if e.stacktrace:
             for st in e.stacktrace:
