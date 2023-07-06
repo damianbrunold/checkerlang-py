@@ -1215,7 +1215,9 @@ class FuncDeleteAt(ValueFunc):
             return lst.deleteAt(index)
 
         raise CklRuntimeError(
-            ValueString("ERROR"), "Cannot delete from " + lst.type(), pos
+            ValueString("ERROR"),
+            "Cannot delete from " + lst.type(),  # nosec
+            pos,
         )
 
 
