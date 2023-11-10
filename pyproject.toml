@@ -1,3 +1,16 @@
+[project]
+name = "ckl"
+version = "3.5.8"
+
+description = "CKL programming language"
+authors = [
+    {name="Damian Brunold", email="dab@dabsoft.ch"}
+]
+requires-python = ">=3.10"
+
+[tool.setuptools]
+packages = ["ckl"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
