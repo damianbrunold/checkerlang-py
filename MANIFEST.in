@@ -1,2 +1,2 @@
-graft ckl/modules
+graft src/ckl/modules
 global-exclude *.pyc
