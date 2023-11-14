@@ -1,6 +1,6 @@
 [project]
 name = "ckl"
-version = "3.5.8"
+version = "3.5.9"
 
 description = "CKL programming language"
 authors = [
@@ -10,6 +10,10 @@ requires-python = ">=3.10"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.scripts]
+ckl-run = "ckl.run:main"
+ckl-repl = "ckl.repl:main"
 
 [build-system]
 requires = ["setuptools"]
