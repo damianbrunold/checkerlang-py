@@ -1,5 +1,4 @@
-autopep8
-flake8
-mypy
-pyinstaller
-pytest
+build==1.0.3
+colorama==0.4.6
+packaging==23.2
+pyproject_hooks==1.0.0
